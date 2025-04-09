@@ -16,9 +16,12 @@ from utils.screenshot_tools import to_screenshot_b64
 class WindowsInstallTools(InstallTools):
     @staticmethod
     def delete_registry_key():
-        params = (f'Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\SEEYON" -Recurse -Force')
-        cmd = f"powershell -Command {params}"
-        call_command(cmd)
+        try:
+            params = (f'Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\SEEYON" -Recurse -Force')
+            cmd = f"powershell -Command {params}"
+            call_command(cmd)
+        except:
+            pass
 
     def unzip_package(self):
         unzip_tool_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
