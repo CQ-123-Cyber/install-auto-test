@@ -39,7 +39,6 @@ class WindowsInstallTools(InstallTools):
         titles = pygetwindow.getAllTitles()
         find = False
         for title in titles:
-            print(title)
             if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
                 print("找到了cmd启动窗口")
                 find = True
@@ -51,7 +50,6 @@ class WindowsInstallTools(InstallTools):
                 pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
                 pyautogui.click()  # 执行物理点击确保焦点
                 pyautogui.hotkey('enter')  # 比单独press更可靠
-                break
         if not find:
             raise RuntimeError('没有找到cmd启动窗口')
 
@@ -85,7 +83,7 @@ class WindowsInstallTools(InstallTools):
                 return window
         raise RuntimeError('没有找到cmd启动窗口')
 
-    @retry(tries=3, delay=1)
+    @retry(tries=5, delay=1)
     def get_verify_code(self):
         self.run_verify_code()
         window = self.get_verify_code_window()

@@ -1,4 +1,5 @@
 import os
+import yaml
 import time
 from retry import retry
 import pyautogui
@@ -35,6 +36,16 @@ class InstallTools(ConfLoad):
     def get_verify_code(self):
         """获取验证码"""
 
+    def change_check_config(self):
+        """修改安装检查项"""
+        check_yaml_path = os.path.join(self.check_dir, 'inst', 'check.yml')
+        with open(check_yaml_path, 'r') as file:
+            data = yaml.safe_load(file)
+        data['server']['vm']['warningMemoryMb'] = 0
+        with open(check_yaml_path, 'w') as file:
+            yaml.safe_dump(data, file)
+        print("修改完成，warningMemoryMb 已更改为 0")
+
     @staticmethod
     def run_verify_code():
         verify_code_exe = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -43,7 +54,7 @@ class InstallTools(ConfLoad):
         cmd = f"powershell -Command {params}"
         call_command(cmd)
 
-    @retry(tries=3, delay=1)
+    @retry(tries=3, delay=5)
     def agent_verify(self, task, screenshot):
         if self.ai_verify:
             content = Agent.verify(task, to_screenshot_b64(screenshot))
@@ -55,9 +66,12 @@ class InstallTools(ConfLoad):
     @staticmethod
     def change_language():
         screenshot = pyautogui.screenshot()
+        screenshot.save('screenshot.png')
         language = Agent.language("输入法是中文还是英文", to_screenshot_b64(screenshot))
         if language == "中文":
+            print("切换输入法到英文")
             pyautogui.hotkey('shift')
+            time.sleep(1)
 
     def install_steps(self, window):
         window.restore()
@@ -65,25 +79,31 @@ class InstallTools(ConfLoad):
         time.sleep(5)
         print(window.left, window.top, window.width, window.height)
 
-        # check_list = CheckList(self)
-        # check_list.check_install_dir()
+        check_list = CheckList(self)
+        check_list.check_install_dir()
         self.change_language()
-        # check_list.check_welcome_accept(window)
+        check_list.check_welcome_accept(window)
         self.welcome_accept(window)
         self.click_next_step(window, "欢迎", "安装路径")
 
-        # check_list.check_install_path(window)
+        check_list.check_install_path(window)
         self.install_path_clean(window)
         self.install_path_input(window)
         self.click_next_step(window, "安装路径", "数据库")
 
-        # check_list.check_database(window)
+        check_list.check_database(window)
         self.database_input(window)
         self.click_next_step(window, "数据库", "数据库")
         self.click_next_step(window, "数据库", "确认")
         self.click_next_step(window, "确认", "确认")
         self.click_next_step(window, "确认", "安装")
         self.install_finish(window)
+
+        check_list.check_password_info_input(window)
+        self.password_info_input(window)
+        self.click_next_step(window, "安装", "安装-IP访问控制")
+        self.click_next_step(window, "安装", "安装完成，并且安装成功")
+        self.click_next_step(window, "完成", "", is_verify=False)
 
     @staticmethod
     def help(window):
@@ -229,13 +249,58 @@ class InstallTools(ConfLoad):
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
         self.agent_verify(task, screenshot)
 
-    @retry(tries=30, delay=20)
+    @retry(tries=20, delay=60)
     def install_finish(self, window):
-        task = f"点击安装，安装完成，并且安装成功"
+        task = f"点击安装，进入安装界面，等待设置账号密码"
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+        # time.sleep(60*7)
         content = Agent.verify(task, to_screenshot_b64(screenshot))
         if content:
             status = content['status']
             if status == "不正确":
                 raise RuntimeError(f"使用AI验证操作结果不正确：\n{content}")
+
+    def password_info_input(self, window):
+        # 初始化管理员账号
+        position = (459, 103)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('init-admin', interval=0.1)
+
+        position = (459, 135)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 167)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 223)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 255)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 287)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 319)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)

@@ -1,55 +1,47 @@
 import os
 import shutil
 
-from conf.settings import NODES
 from utils.file_tools import handle_remove_read_only
-from conf.settings import package_download_url, ai_verify, has_verify_code
+from dotenv import load_dotenv
 
 
 class ConfLoad:
     def __init__(self):
-        self.ai_verify = ai_verify
-        self.node = self.get_install_node()
-        self.workspace = self.get_workspace()
-        self.product_line = self.get_product_line()
-        self.version = self.get_version()
-        self.package_name, self.package_download_url = self.get_package_info()
-        self.screenshots_dir = self.get_screenshots_dir()
-        self.install_path = self.node['install_path']
-        self.sql_type = self.node['sql_type']
-        self.has_verify_code = has_verify_code
+        load_dotenv()
+        self.ai_verify = os.getenv('ai_verify', '').lower() == 'true'
+        self.has_verify_code = os.getenv('has_verify_code', 'false').lower() == 'true'
+        self.package_name = os.getenv('package_name')
+        if not self.package_name:
+            raise Exception(f"没有找到环境变量：package_name")
+        self.package_download_url = os.getenv('package_download_url')
+        if not self.package_download_url:
+            raise Exception(f"没有找到环境变量：package_download_url")
+        self.product_line = os.getenv('product_line')
+        if not self.product_line:
+            raise Exception(f"没有找到环境变量：product_line")
+        self.workspace = os.getenv('workspace')
+        if not self.workspace:
+            raise Exception(f"没有找到环境变量：workspace")
+        if not os.path.isdir(self.workspace):
+            os.makedirs(self.workspace)
+        self.version = os.getenv('version')
+        if not self.version:
+            raise Exception(f"没有找到环境变量：version")
+        self.install_path = os.getenv('install_path')
+        if not self.install_path:
+            raise Exception(f"没有找到环境变量：install_path")
+        self.sql_type = os.getenv('sql_type')
+        if not self.sql_type:
+            raise Exception(f"没有找到环境变量：sql_type")
+
         self.verify_code = ''
+        # 安装包解压目录
+        self.check_dir = f'{self.workspace}\\{self.package_name.replace(".zip", "")}'
+        self.screenshots_dir = self.get_screenshots_dir()
 
     def delete_install_path(self):
         if os.path.isdir(self.install_path):
             shutil.rmtree(self.install_path, onerror=handle_remove_read_only)
-
-    @staticmethod
-    def get_install_node():
-        """根据环境变量获取测试节点"""
-        node_name = os.getenv('INSTALL_NODE', '')
-        if not node_name in NODES.keys():
-            raise RuntimeError(f"请在环境变量INSTALL_NODE设置安装节点名称")
-        return NODES[node_name]
-
-    def get_product_line(self):
-        """测试的产品线，如：A8-2"""
-        return self.node['product_line']
-
-    def get_version(self):
-        """测试的版本，如：V9.1"""
-        return self.node['version']
-
-    def get_workspace(self):
-        workspace = self.node['workspace']
-        if not os.path.isdir(workspace):
-            os.makedirs(workspace)
-        return workspace
-
-    @staticmethod
-    def get_package_info():
-        package_name = package_download_url.split('/')[-1]
-        return package_name, package_download_url
 
     @staticmethod
     def get_screenshots_dir():

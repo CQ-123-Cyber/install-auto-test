@@ -15,13 +15,11 @@ class CheckList(ConfLoad):
     def __init__(self, install_tool):
         super().__init__()
         self.install_tool = install_tool
-        # 安装包解压目录
-        self.check_dir = f'{self.workspace}\\{self.package_name.replace(".zip", "")}'
         # 基准截图目录
         self.base_screenshots_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                                  'base_screenshots')
 
-    @retry(tries=3, delay=1)
+    @retry(tries=3, delay=5)
     def agent_check_from_base(self, task, screenshot, base_screenshot):
         if self.ai_verify:
             content = Agent.check_from_base(task, to_screenshot_b64(screenshot), base_screenshot)
@@ -121,3 +119,13 @@ class CheckList(ConfLoad):
         self.install_tool.click_last_step(window, "数据库", "安装路径")
         self.install_tool.click_next_step(window, "安装路径", "数据库")
 
+    def check_password_info_input(self, window):
+        """
+        检查【账号密码设置】页面
+        """
+        task = "安装-账号密码设置"
+        self.check_from_base(task, window)
+
+        self.install_tool.click_last_step(window, "安装", "确认")
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        self.agent_check('当前处于安装-账号密码设置界面', screenshot)
