@@ -39,6 +39,7 @@ class WindowsInstallTools(InstallTools):
         titles = pygetwindow.getAllTitles()
         find = False
         for title in titles:
+            print(title)
             if title == "C:\WINDOWS\system32\cmd.exe":
                 print("找到了cmd启动窗口")
                 find = True
