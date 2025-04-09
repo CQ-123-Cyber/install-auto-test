@@ -1,0 +1,11 @@
+pyautogui==0.9.54
+opencv-python==4.11.0.86
+pywinauto==0.6.9
+retry==0.9.2
+jaydebeapi==1.2.3
+SQLAlchemy==1.4.37
+pymysql==1.0.2
+arrow==1.2.2
+pytz==2022.1
+cryptography==44.0.2
+paramiko==3.5.1
