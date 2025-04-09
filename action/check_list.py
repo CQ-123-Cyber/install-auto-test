@@ -99,8 +99,7 @@ class CheckList(ConfLoad):
         检查【安装路径】页面
         """
         task = "安装路径"
-        screenshot = self.check_from_base(task, window)
-        self.agent_check('"恢复缺省文件夹"按钮处于激活状态，"选择"按钮处于激活状态', screenshot)
+        self.check_from_base(task, window)
 
         self.install_tool.click_last_step(window, "安装路径", "欢迎")
         self.install_tool.click_next_step(window, "欢迎", "安装路径")

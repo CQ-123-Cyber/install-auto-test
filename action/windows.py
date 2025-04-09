@@ -17,7 +17,7 @@ class WindowsInstallTools(InstallTools):
     @staticmethod
     def delete_registry_key():
         try:
-            params = (f'Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\SEEYON" -Recurse -Force')
+            params = (f'Remove-Item -Path "HKEY_LOCAL_MACHINE:\SOFTWARE\WOW6432Node\SEEYON" -Recurse -Force')
             cmd = f"powershell -Command {params}"
             call_command(cmd)
         except:
