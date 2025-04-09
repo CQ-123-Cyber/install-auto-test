@@ -6,10 +6,10 @@ has_verify_code = True
 
 NODES = {
     "": {
-        "workspace": "C:\\home\\workspace",
+        "workspace": "D:\\home\\workspace",
         "product_line": "A8-2",
         "version": "V9.1",
-        "install_path": "C:\\home\\workspace\Seeyon\A8",
+        "install_path": "D:\\home\\workspace\Seeyon\A8",
         "sql_type": "mysql"
     }
 }
