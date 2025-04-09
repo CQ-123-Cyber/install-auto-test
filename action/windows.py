@@ -40,7 +40,7 @@ class WindowsInstallTools(InstallTools):
         find = False
         for title in titles:
             print(title)
-            if title == "C:\WINDOWS\system32\cmd.exe":
+            if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
                 print("找到了cmd启动窗口")
                 find = True
                 window = pygetwindow.getWindowsWithTitle(title)[0]
@@ -85,6 +85,7 @@ class WindowsInstallTools(InstallTools):
                 return window
         raise RuntimeError('没有找到cmd启动窗口')
 
+    @retry(tries=3, delay=1)
     def get_verify_code(self):
         self.run_verify_code()
         window = self.get_verify_code_window()
@@ -95,7 +96,8 @@ class WindowsInstallTools(InstallTools):
         matches = re.findall(pattern, verify_code_text)
         if matches:
             self.verify_code = matches[0]
-            return matches[0]
+            print(f"验证码：{self.verify_code}")
+            return self.verify_code
         raise Exception(f"AI获取验证码失败")
 
 
