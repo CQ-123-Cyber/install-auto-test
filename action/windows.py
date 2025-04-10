@@ -55,7 +55,7 @@ class WindowsInstallTools(InstallTools):
                 print("找到了cmd启动窗口")
                 find = True
                 window = pygetwindow.getWindowsWithTitle(title)[0]
-                # window.maximize()
+                window.maximize()
                 window.restore()
                 window.activate()
                 time.sleep(3)
@@ -90,13 +90,27 @@ class WindowsInstallTools(InstallTools):
                 print("找到了验证码窗口")
                 time.sleep(3)  # 等待窗口加载完
                 window = pygetwindow.getWindowsWithTitle(title)[0]
+                window.maximize()
                 window.restore()
                 window.activate()
                 return window
         raise RuntimeError('没有找到cmd启动窗口')
 
+    def load_verify_code(self):
+        if os.path.isfile(self.verify_code_cache_path):
+            with open(self.verify_code_cache_path, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        return None
+
+    def write_verify_code(self):
+        with open(self.verify_code_cache_path, 'w', encoding='utf-8') as f:
+            f.write(self.verify_code)
+
     @retry(tries=5, delay=1)
     def get_verify_code(self):
+        verify_code = self.load_verify_code()
+        if verify_code:
+            return verify_code
         self.run_verify_code()
         window = self.get_verify_code_window()
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
@@ -107,6 +121,7 @@ class WindowsInstallTools(InstallTools):
         if matches:
             self.verify_code = matches[0]
             print(f"验证码：{self.verify_code}")
+            self.write_verify_code()
             return self.verify_code
         raise Exception(f"AI获取验证码失败")
 

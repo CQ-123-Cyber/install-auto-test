@@ -3,6 +3,7 @@ import shutil
 
 from utils.file_tools import handle_remove_read_only
 from dotenv import load_dotenv
+from utils.time_help import datetime2str_by_format
 
 
 class ConfLoad:
@@ -35,6 +36,9 @@ class ConfLoad:
             raise Exception(f"没有找到环境变量：sql_type")
 
         self.verify_code = ''
+        # 按天缓存验证码，验证码每天修改一次
+        self.verify_code_cache_path = os.path.join(os.path.dirname(self.workspace),
+                                                   f'verify_code_cache.{datetime2str_by_format(dt_format="%Y-%m-%d")}')
         # 安装包解压目录
         self.check_dir = f'{self.workspace}\\{self.package_name.replace(".zip", "")}'
         self.screenshots_dir = self.get_screenshots_dir()
