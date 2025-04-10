@@ -42,7 +42,7 @@ class WindowsInstallTools(InstallTools):
         call_command(cmd)
 
     @staticmethod
-    @retry(tries=12, delay=10)
+    # @retry(tries=12, delay=10)
     def get_cmd_window():
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
