@@ -54,7 +54,7 @@ class WindowsInstallTools(InstallTools):
                 find = True
                 window = pygetwindow.getWindowsWithTitle(title)[0]
                 window.restore()
-                window.activate()
+                # window.activate()
                 time.sleep(3)
                 print(f"找到了cmd启动窗口，开始点击确认")
                 screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
