@@ -113,6 +113,8 @@ class WindowsInstallTools(InstallTools):
         verify_code = self.load_verify_code()
         if verify_code:
             self.verify_code = verify_code
+            print(f"验证码：{self.verify_code}")
+            return
         self.run_verify_code()
         time.sleep(5)
         window = self.get_verify_code_window()
@@ -125,6 +127,7 @@ class WindowsInstallTools(InstallTools):
             self.verify_code = matches[0]
             print(f"验证码：{self.verify_code}")
             self.write_verify_code()
+            return
         raise Exception(f"AI获取验证码失败")
 
 
