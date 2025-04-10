@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 import time
 import subprocess
 import pygetwindow
@@ -11,6 +12,7 @@ from action.base import InstallTools
 from utils.cmd_tools import call_command
 from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
+from utils.file_tools import handle_remove_read_only
 
 
 class WindowsInstallTools(InstallTools):
@@ -24,9 +26,13 @@ class WindowsInstallTools(InstallTools):
             pass
 
     def unzip_package(self):
+        dest_dir = self.check_dir
+        if os.path.isdir(dest_dir):
+            print(f"正在删除上一次的安装包解压目录")
+            shutil.rmtree(dest_dir, onerror=handle_remove_read_only)
         unzip_tool_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                        'tools', '7z.exe')
-        cmd = f"{unzip_tool_path} x {self.workspace}\\{self.package_name}"
+        cmd = f"{unzip_tool_path} x {dest_dir}"
         call_command(cmd, cwd=self.workspace)
 
     def run_as_admin(self):

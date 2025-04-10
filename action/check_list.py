@@ -17,7 +17,7 @@ class CheckList(ConfLoad):
         self.install_tool = install_tool
         # 基准截图目录
         self.base_screenshots_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                                 'base_screenshots')
+                                                 'base_screenshots', str(self.version), str(self.product_line))
 
     @retry(tries=3, delay=5)
     def agent_check_from_base(self, task, screenshot, base_screenshot):
@@ -61,6 +61,8 @@ class CheckList(ConfLoad):
                 raise Exception(f"检查安装包解压目录失败，{file_name}不存在")
 
     def check_from_base(self, task, window):
+        if not os.path.isdir(self.base_screenshots_dir):
+            os.makedirs(self.base_screenshots_dir)
         base_screenshot_path = os.path.join(self.base_screenshots_dir, f'{task}.png')
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         if not os.path.isfile(base_screenshot_path):

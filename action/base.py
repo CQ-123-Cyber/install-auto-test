@@ -66,7 +66,6 @@ class InstallTools(ConfLoad):
     @staticmethod
     def change_language():
         screenshot = pyautogui.screenshot()
-        screenshot.save('screenshot.png')
         language = Agent.language("输入法是中文还是英文", to_screenshot_b64(screenshot))
         if language == "中文":
             print("切换输入法到英文")
