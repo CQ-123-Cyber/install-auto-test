@@ -48,6 +48,9 @@ class WindowsInstallTools(InstallTools):
         titles = pygetwindow.getAllTitles()
         find = False
         for title in titles:
+            # jenkins的agent窗口忽略
+            if "agent.jar" in title.lower().strip():
+                continue
             if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
                 print("找到了cmd启动窗口")
                 find = True
