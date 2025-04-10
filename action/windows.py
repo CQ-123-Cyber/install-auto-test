@@ -65,7 +65,7 @@ class WindowsInstallTools(InstallTools):
         if not find:
             raise RuntimeError('没有找到cmd启动窗口')
 
-    @retry(tries=30, delay=1)
+    @retry(tries=10, delay=1)
     def get_install_window(self):
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
