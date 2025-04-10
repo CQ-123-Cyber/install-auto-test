@@ -7,6 +7,7 @@ import pygetwindow
 import winreg
 import pyautogui
 from retry import retry
+from pynput.mouse import Button, Controller
 
 from action.base import InstallTools
 from utils.cmd_tools import call_command
@@ -59,9 +60,16 @@ class WindowsInstallTools(InstallTools):
                 window.restore()
                 window.activate()
                 time.sleep(3)
-                pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
-                pyautogui.click()  # 执行物理点击确保焦点
-                pyautogui.hotkey('enter')  # 比单独press更可靠
+                mouse = Controller()
+                mouse.position = (window.left + 10, window.top + 10)
+                mouse.click(Button.left, 1)
+                from pynput.keyboard import Key, Controller as keyboard_Controller
+                keyboard_c = keyboard_Controller()
+                keyboard_c.press(Key.enter)
+                keyboard_c.release(Key.enter)
+                # pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
+                # pyautogui.click()  # 执行物理点击确保焦点
+                # pyautogui.hotkey('enter')  # 比单独press更可靠
         if not find:
             raise RuntimeError('没有找到cmd启动窗口')
 
