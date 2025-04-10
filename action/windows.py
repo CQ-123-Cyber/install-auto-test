@@ -2,12 +2,9 @@ import os
 import re
 import shutil
 import time
-import subprocess
 import pygetwindow
-import winreg
 import pyautogui
 from retry import retry
-from pynput.mouse import Button, Controller
 
 from action.base import InstallTools
 from utils.cmd_tools import call_command
@@ -56,20 +53,12 @@ class WindowsInstallTools(InstallTools):
                 print("找到了cmd启动窗口")
                 find = True
                 window = pygetwindow.getWindowsWithTitle(title)[0]
-                window.maximize()
                 window.restore()
                 window.activate()
                 time.sleep(3)
-                # mouse = Controller()
-                # mouse.position = (window.left + 10, window.top + 10)
-                # mouse.click(Button.left, 1)
-                # from pynput.keyboard import Key, Controller as keyboard_Controller
-                # keyboard_c = keyboard_Controller()
-                # keyboard_c.press(Key.enter)
-                # keyboard_c.release(Key.enter)
-                pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
-                pyautogui.click()  # 执行物理点击确保焦点
-                pyautogui.hotkey('enter')  # 比单独press更可靠
+                pyautogui.moveTo(window.left + 10, window.top + 10, logScreenshot=True)  # 将鼠标移动到窗口内
+                pyautogui.click(logScreenshot=True)  # 执行物理点击确保焦点
+                pyautogui.hotkey('enter', logScreenshot=True)  # 比单独press更可靠
         if not find:
             raise RuntimeError('没有找到cmd启动窗口')
 
@@ -89,7 +78,7 @@ class WindowsInstallTools(InstallTools):
         self.get_cmd_window()
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
 
-    # @retry(tries=30, delay=1)
+    @retry(tries=3, delay=1)
     def get_verify_code_window(self):
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
@@ -98,7 +87,6 @@ class WindowsInstallTools(InstallTools):
                 print("找到了验证码窗口")
                 time.sleep(3)  # 等待窗口加载完
                 window = pygetwindow.getWindowsWithTitle(title)[0]
-                window.maximize()
                 window.restore()
                 window.activate()
                 return window
@@ -114,7 +102,7 @@ class WindowsInstallTools(InstallTools):
         with open(self.verify_code_cache_path, 'w', encoding='utf-8') as f:
             f.write(self.verify_code)
 
-    # @retry(tries=5, delay=1)
+    @retry(tries=5, delay=1)
     def get_verify_code(self):
         verify_code = self.load_verify_code()
         if verify_code:

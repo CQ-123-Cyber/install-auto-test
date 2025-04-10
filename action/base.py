@@ -73,7 +73,6 @@ class InstallTools(ConfLoad):
             time.sleep(1)
 
     def install_steps(self, window):
-        window.maximize()
         window.restore()
         window.activate()
         time.sleep(5)
