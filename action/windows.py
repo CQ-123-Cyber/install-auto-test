@@ -32,7 +32,7 @@ class WindowsInstallTools(InstallTools):
             shutil.rmtree(dest_dir, onerror=handle_remove_read_only)
         unzip_tool_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                        'tools', '7z.exe')
-        cmd = f"{unzip_tool_path} x {dest_dir}"
+        cmd = f"{unzip_tool_path} x {self.workspace}\\{self.package_name}"
         call_command(cmd, cwd=self.workspace)
 
     def run_as_admin(self):
