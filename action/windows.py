@@ -55,6 +55,7 @@ class WindowsInstallTools(InstallTools):
                 window = pygetwindow.getWindowsWithTitle(title)[0]
                 window.restore()
                 time.sleep(1)
+                window = pygetwindow.getWindowsWithTitle(title)[0]
                 window.activate()
                 time.sleep(3)
                 pyautogui.moveTo(window.left + 10, window.top + 10, logScreenshot=True)  # 将鼠标移动到窗口内
