@@ -52,6 +52,7 @@ class WindowsInstallTools(InstallTools):
             if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
                 print("找到了cmd启动窗口")
                 find = True
+                time.sleep(10)
                 window = pygetwindow.getWindowsWithTitle(title)[0]
                 window.restore()
                 time.sleep(1)
@@ -64,8 +65,9 @@ class WindowsInstallTools(InstallTools):
         if not find:
             raise RuntimeError('没有找到cmd启动窗口')
 
-    @retry(tries=10, delay=1)
+    # @retry(tries=10, delay=1)
     def get_install_window(self):
+        self.get_cmd_window()
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
         for title in titles:
@@ -77,7 +79,7 @@ class WindowsInstallTools(InstallTools):
                 return window
 
         print("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
-        self.get_cmd_window()
+        # self.get_cmd_window()
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
 
     @retry(tries=3, delay=1)
