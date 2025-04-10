@@ -8,6 +8,6 @@ if __name__ == "__main__":
     # tools.download()
     # tools.unzip_package()
     tools.change_check_config()
-    tools.run_as_admin()
+    # tools.run_as_admin()
     install_window = tools.get_install_window()
     tools.install_steps(install_window)
