@@ -57,6 +57,8 @@ class WindowsInstallTools(InstallTools):
                 # window.activate()
                 time.sleep(3)
                 print(f"找到了cmd启动窗口，开始点击确认")
+                screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+                screenshot.save('screenshot.png')
                 print(window.left + 10, window.top + 10)
                 pyautogui.moveTo(window.left + 10, window.top + 10, logScreenshot=True)  # 将鼠标移动到窗口内
                 pyautogui.click(logScreenshot=True)  # 执行物理点击确保焦点

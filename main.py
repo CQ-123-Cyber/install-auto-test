@@ -2,6 +2,7 @@ from action.windows import WindowsInstallTools
 
 if __name__ == "__main__":
     tools = WindowsInstallTools()
+
     tools.get_verify_code()
     tools.delete_install_path()
     tools.delete_registry_key()
