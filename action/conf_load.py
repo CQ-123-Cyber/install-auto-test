@@ -37,7 +37,7 @@ class ConfLoad:
 
         self.verify_code = ''
         # 按天缓存验证码，验证码每天修改一次
-        self.verify_code_cache_path = os.path.join(os.path.dirname(self.workspace),
+        self.verify_code_cache_path = os.path.join(self.workspace,
                                                    f'verify_code_cache.{datetime2str_by_format(dt_format="%Y-%m-%d")}')
         # 安装包解压目录
         self.check_dir = f'{self.workspace}\\{self.package_name.replace(".zip", "")}'
