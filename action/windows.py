@@ -81,7 +81,7 @@ class WindowsInstallTools(InstallTools):
         self.get_cmd_window()
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
 
-    @retry(tries=30, delay=1)
+    # @retry(tries=30, delay=1)
     def get_verify_code_window(self):
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
@@ -106,12 +106,13 @@ class WindowsInstallTools(InstallTools):
         with open(self.verify_code_cache_path, 'w', encoding='utf-8') as f:
             f.write(self.verify_code)
 
-    @retry(tries=5, delay=1)
+    # @retry(tries=5, delay=1)
     def get_verify_code(self):
         verify_code = self.load_verify_code()
         if verify_code:
             return verify_code
         self.run_verify_code()
+        time.sleep(5)
         window = self.get_verify_code_window()
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         verify_code_text = Agent.verify_code("识别出验证码", to_screenshot_b64(screenshot))
