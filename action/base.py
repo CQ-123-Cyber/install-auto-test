@@ -208,41 +208,57 @@ class InstallTools(ConfLoad):
         sql_cls.create_database()
 
         # 设置host
-        position = (321, 133)
+        if self.has_verify_code:
+            position = (321, 133)
+        else:
+            position = (321, 148)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.write(sql_cls.host, interval=0.1)
 
         # 设置端口
-        position = (345, 159)
+        if self.has_verify_code:
+            position = (345, 159)
+        else:
+            position = (321, 174)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.write(sql_cls.port, interval=0.1)
 
         # 设置数据库名称
-        position = (321, 187)
+        if self.has_verify_code:
+            position = (321, 187)
+        else:
+            position = (321, 200)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.write(sql_cls.database_name, interval=0.1)
 
         # 设置用户名
-        position = (321, 211)
+        if self.has_verify_code:
+            position = (321, 211)
+        else:
+            position = (321, 226)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.write(sql_cls.user, interval=0.1)
 
         # 设置密码
-        position = (321, 237)
+        if self.has_verify_code:
+            position = (321, 237)
+        else:
+            position = (321, 252)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.write(sql_cls.password, interval=0.1)
 
         # 验证码
-        position = (321, 300)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.write(self.verify_code, interval=0.1)
+        if self.has_verify_code:
+            position = (321, 300)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+            pyautogui.write(self.verify_code, interval=0.1)
 
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
@@ -253,7 +269,7 @@ class InstallTools(ConfLoad):
         task = f"点击安装，进入安装界面，当前界面出现设置账号密码的输入框"
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        time.sleep(60*7)
+        time.sleep(60*5)
         content = Agent.verify(task, to_screenshot_b64(screenshot))
         if content:
             status = content['status']
