@@ -48,5 +48,6 @@ class ConfLoad:
         screenshots_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'screenshots')
         if os.path.isdir(screenshots_dir):
             shutil.rmtree(screenshots_dir, onerror=handle_remove_read_only)
+        if not os.path.isdir(screenshots_dir):
             os.makedirs(screenshots_dir)
         return screenshots_dir
