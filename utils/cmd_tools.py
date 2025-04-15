@@ -1,6 +1,7 @@
 import os
 import copy
 import subprocess
+from loguru import logger
 
 
 def console_to_str(s):
@@ -11,7 +12,7 @@ def console_to_str(s):
 
 
 def call_command(cmd, cwd=None, env=None, shell=True):
-    print("cmd:", str(cmd))
+    logger.info("cmd:", str(cmd))
     new_env = env
     if env and isinstance(env, dict):
         now_env = copy.deepcopy(os.environ.copy())
@@ -19,10 +20,10 @@ def call_command(cmd, cwd=None, env=None, shell=True):
         new_env = now_env
     ex = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=shell, cwd=cwd, env=new_env)
     for i in iter(ex.stdout.readline, b''):
-        print(console_to_str(i).strip())
+        logger.info(console_to_str(i).strip())
     if ex.wait() != 0:
         for i in iter(ex.stdout.readline, b''):
-            print(console_to_str(i).strip())
+            logger.info(console_to_str(i).strip())
         raise RuntimeError("cmd命令执行失败")
 
 
