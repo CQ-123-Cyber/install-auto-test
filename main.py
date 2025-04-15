@@ -1,9 +1,31 @@
+import os
+from dotenv import load_dotenv
+from loguru import logger
+
 from action.windows import WindowsInstallTools
+from action.linux import LinuxInstallTools
 
-if __name__ == "__main__":
-    tools = WindowsInstallTools()
 
+def main():
+    os_system = os.getenv('os_system', 'windows')
+    os_system = 'windows'
+    logger.info(f"从环境变量识别到os_system={os_system}")
+    dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', os_system, '.env')
+    if not os.path.isfile(dotenv_path):
+        raise Exception(f".env文件不存在：{dotenv_path}")
+    load_dotenv(dotenv_path=dotenv_path)
+
+    if os_system == 'windows':
+        tools = WindowsInstallTools()
+    elif os_system == 'linux':
+        tools = LinuxInstallTools()
+    else:
+        raise Exception(f"操作系统待实现：{os_system}")
+
+    assert isinstance(tools, WindowsInstallTools)  # 开发调试用
+    logger.info(f"开始验证码")
     tools.get_verify_code()
+    logger.info(f"开始删除安装目标目录")
     tools.delete_install_path()
     tools.delete_registry_key()
     tools.download()
@@ -12,3 +34,9 @@ if __name__ == "__main__":
     tools.run_as_admin()
     install_window = tools.get_install_window()
     tools.install_steps(install_window)
+    tools.check_list.check_registry_key()
+    tools.check_list.check_finish_install_path()
+
+
+if __name__ == "__main__":
+    main()

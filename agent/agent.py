@@ -1,16 +1,18 @@
 import requests
 import json
+from loguru import logger
 
 url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 api_key = "sk-d1b82892759b4feba984b823b79a3a5a"
 model = "deepseek-r1"
-
 
 url = f"https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 api_key = "sk-af877d0ab744453eaa437da0df76eeaa"
 model = "qwen-vl-plus"
 model = "qvq-72b-preview"  # 只支持单轮对话
 model = "qwen-vl-max-2025-01-25"  # 图片+推理效果不好
+
+
 # model = "llama-4-maverick-17b-128e-instruct"
 # model = "qwen2.5-vl-32b-instruct" # 图片+推理效果不好
 # model = 'qwen-vl-ocr'
@@ -19,7 +21,7 @@ model = "qwen-vl-max-2025-01-25"  # 图片+推理效果不好
 class Agent:
     @staticmethod
     def verify(task, screenshot):
-        print(f"正在AI验证的task：{task}")
+        logger.info(f"正在AI验证的task：{task}")
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
@@ -56,7 +58,7 @@ class Agent:
         }
 
         res = requests.post(url, headers=headers, json=data, timeout=600)
-        print(res.text)
+        logger.info(res.text)
         if res.status_code == 200:
             content = res.json()['choices'][0]['message']['content']
             content = content.replace("```json", "").replace("```", "")
@@ -65,7 +67,7 @@ class Agent:
 
     @staticmethod
     def check_from_base(task, screenshot, base_screenshot):
-        print(f"正在AI对比检查的task：{task}")
+        logger.info(f"正在AI对比检查的task：{task}")
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
@@ -113,7 +115,7 @@ class Agent:
         }
 
         res = requests.post(url, headers=headers, json=data, timeout=600)
-        print(res.text)
+        logger.info(res.text)
         if res.status_code == 200:
             content = res.json()['choices'][0]['message']['content']
             content = content.replace("```json", "").replace("```", "")
@@ -122,7 +124,7 @@ class Agent:
 
     @staticmethod
     def check(task, screenshot):
-        print(f"正在AI检查的task：{task}")
+        logger.info(f"正在AI检查的task：{task}")
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
@@ -160,7 +162,7 @@ class Agent:
         }
 
         res = requests.post(url, headers=headers, json=data, timeout=600)
-        print(res.text)
+        logger.info(res.text)
         if res.status_code == 200:
             content = res.json()['choices'][0]['message']['content']
             content = content.replace("```json", "").replace("```", "")
@@ -201,7 +203,7 @@ class Agent:
         }
 
         res = requests.post(url, headers=headers, json=data, timeout=600)
-        print(res.text)
+        logger.info(res.text)
         if res.status_code == 200:
             content = res.json()['choices'][0]['message']['content']
             content = content.replace("```json", "").replace("```", "")
@@ -243,7 +245,7 @@ class Agent:
         }
 
         res = requests.post(url, headers=headers, json=data, timeout=600)
-        print(res.text)
+        logger.info(res.text)
         if res.status_code == 200:
             content = res.json()['choices'][0]['message']['content']
             return content
@@ -287,7 +289,7 @@ class Agent:
         }
 
         res = requests.post(url, headers=headers, json=data, timeout=600)
-        print(res.text)
+        logger.info(res.text)
         if res.status_code == 200:
             content = res.json()['choices'][0]['message']['content']
             return content

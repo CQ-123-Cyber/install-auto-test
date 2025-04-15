@@ -1,8 +1,11 @@
 import os
+import re
 import yaml
 import time
 from retry import retry
 import pyautogui
+import pygetwindow
+from loguru import logger
 from abc import abstractmethod
 
 from action.conf_load import ConfLoad
@@ -10,14 +13,72 @@ from utils.cmd_tools import call_command
 from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
 from action.database import get_database_cls
-from action.check_list import CheckList
+from action.check_list.windows_check_list import WindowsCheckList
 
 
 class InstallTools(ConfLoad):
+    def __init__(self):
+        super().__init__()
+        self.check_list = None
+
     def download(self):
         """下载安装程序"""
-        cmd = f"curl {self.package_download_url} -o {self.workspace}/{self.package_name}"
+        cmd = f"curl {self.package_download_url} -o {self.install_workspace}/{self.package_name}"
         call_command(cmd)
+
+    @retry(tries=3, delay=1)
+    def get_verify_code_window(self):
+        # 获取所有窗口
+        titles = pygetwindow.getAllTitles()
+        for title in titles:
+            if "verify-code.exe" in title:
+                logger.info(f"找到了验证码窗口：{title}")
+                time.sleep(3)  # 等待窗口加载完
+                window = pygetwindow.getWindowsWithTitle(title)[0]
+                window.restore()
+                window.activate()
+                return window
+        raise RuntimeError('没有找到cmd启动窗口')
+
+    def load_verify_code(self):
+        if os.path.isfile(self.verify_code_cache_path):
+            logger.info(f"识别到存在验证码缓存文件，从缓存加载验证码")
+            with open(self.verify_code_cache_path, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        return None
+
+    def write_verify_code(self):
+        with open(self.verify_code_cache_path, 'w', encoding='utf-8') as f:
+            f.write(self.verify_code)
+
+    @retry(tries=5, delay=1)
+    def get_verify_code(self):
+        verify_code = self.load_verify_code()
+        if verify_code:
+            self.verify_code = verify_code
+            logger.info(f"验证码：{self.verify_code}")
+            return
+        logger.info(f"验证码缓存文件不存在，开始运行验证码工具")
+        self.run_verify_code()
+        time.sleep(5)
+        window = self.get_verify_code_window()
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        screenshot.save(os.path.join(self.screenshots_dir, f'验证码.png'))
+        window.close()
+        verify_code_text = Agent.verify_code("识别出验证码", to_screenshot_b64(screenshot))
+        pattern = r'\d{5}'
+        matches = re.findall(pattern, verify_code_text)
+        logger.info(f"正则匹配验证码结果：{matches}")
+        if matches:
+            self.verify_code = matches[0]
+            logger.info(f"验证码：{self.verify_code}")
+            self.write_verify_code()
+            return
+        raise Exception(f"AI获取验证码失败")
+
+    @abstractmethod
+    def delete_install_path(self):
+        """删除安装目标目录"""
 
     @staticmethod
     @abstractmethod
@@ -31,10 +92,6 @@ class InstallTools(ConfLoad):
     @abstractmethod
     def run_as_admin(self):
         """使用管理员运行安装程序"""
-
-    @abstractmethod
-    def get_verify_code(self):
-        """获取验证码"""
 
     def change_check_config(self):
         """修改安装检查项"""
@@ -50,7 +107,7 @@ class InstallTools(ConfLoad):
     def run_verify_code():
         verify_code_exe = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                        'tools', 'verify-code.exe')
-        params = f'Start-Process "{verify_code_exe}" -Verb RunAs'
+        params = f'Start-Process "{verify_code_exe}"'
         cmd = f"powershell -Command {params}"
         call_command(cmd)
 
@@ -78,31 +135,31 @@ class InstallTools(ConfLoad):
         time.sleep(5)
         print(window.left, window.top, window.width, window.height)
 
-        check_list = CheckList(self)
-        check_list.check_install_dir()
+        self.check_list.check_install_dir()
         self.change_language()
-        check_list.check_welcome_accept(window)
+        self.check_list.check_welcome_accept(window)
         self.welcome_accept(window)
         self.click_next_step(window, "欢迎", "安装路径")
 
-        check_list.check_install_path(window)
+        self.check_list.check_install_path(window)
         self.install_path_clean(window)
         self.install_path_input(window)
         self.click_next_step(window, "安装路径", "数据库")
 
-        check_list.check_database(window)
+        self.check_list.check_database(window)
         self.database_input(window)
         self.click_next_step(window, "数据库", "数据库")
         self.click_next_step(window, "数据库", "确认")
         self.click_next_step(window, "确认", "确认")
         self.click_next_step(window, "确认", "安装")
+        time.sleep(60 * 5)  # 等待安装
         self.install_finish(window)
 
-        check_list.check_password_info_input(window)
+        self.check_list.check_password_info_input(window)
         self.password_info_input(window)
         self.click_next_step(window, "安装", "安装-IP访问控制")
         self.click_next_step(window, "安装", "安装完成，并且安装成功")
-        self.click_next_step(window, "完成", "", is_verify=False)
+        self.click_next_step(window, "完成", "", is_verify=False, is_save=False)
 
     @staticmethod
     def help(window):
@@ -154,16 +211,18 @@ class InstallTools(ConfLoad):
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
 
-    def click_next_step(self, window, frame_name, next_frame_name, is_verify=True):
+    def click_next_step(self, window, frame_name, next_frame_name, is_verify=True, is_save=True):
         """点击下一步"""
         task = f"点击{frame_name}-下一步，进入{next_frame_name}"
         position = (549, 407)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         time.sleep(3)
-        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
-        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        if is_verify:
+        screenshot = None
+        if is_save:
+            screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+            screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+        if is_verify and screenshot:
             self.agent_verify(task, screenshot)
 
     def click_last_step(self, window, frame_name, next_frame_name):
@@ -264,12 +323,11 @@ class InstallTools(ConfLoad):
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
         self.agent_verify(task, screenshot)
 
-    @retry(tries=20, delay=60)
+    @retry(tries=15, delay=60)
     def install_finish(self, window):
         task = f"点击安装，进入安装界面，当前界面出现设置账号密码的输入框"
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        time.sleep(60*5)
         content = Agent.verify(task, to_screenshot_b64(screenshot))
         if content:
             status = content['status']

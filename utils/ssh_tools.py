@@ -28,10 +28,10 @@ class SSHClient():
             self.channel = self.ssh.get_transport().open_session()
             self.channel.exec_command(cmd)
             self.channel.shutdown_write()
-            # stdout_str = self.channel.makefile().read().decode()
-            # stderr_str = self.channel.makefile_stderr().read().decode()
-            # exit_code = self.channel.recv_exit_status()
-            # return exit_code, stdout_str + "\n" + stderr_str
+            stdout_str = self.channel.makefile().read().decode()
+            stderr_str = self.channel.makefile_stderr().read().decode()
+            exit_code = self.channel.recv_exit_status()
+            return exit_code, stdout_str + "\n" + stderr_str
         finally:
             if hasattr(self, "channel") and hasattr(self.channel, "close"):
                 self.channel.close()

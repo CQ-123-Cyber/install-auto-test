@@ -11,9 +11,19 @@ from utils.cmd_tools import call_command
 from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
 from utils.file_tools import handle_remove_read_only
+from action.check_list.windows_check_list import WindowsCheckList
+from action.check_list.no_check_list import NoCheckList
 
 
 class WindowsInstallTools(InstallTools):
+    def __init__(self):
+        super().__init__()
+        self.check_list = WindowsCheckList(self) if self.is_check_list == True else NoCheckList(self)
+
+    def delete_install_path(self):
+        if os.path.isdir(self.install_path):
+            shutil.rmtree(self.install_path, onerror=handle_remove_read_only)
+
     @staticmethod
     def delete_registry_key():
         try:
@@ -23,6 +33,11 @@ class WindowsInstallTools(InstallTools):
         except:
             pass
 
+    def download(self):
+        """下载安装程序"""
+        cmd = f"curl {self.package_download_url} -o {self.install_workspace}/{self.package_name}"
+        call_command(cmd)
+
     def unzip_package(self):
         dest_dir = self.check_dir
         if os.path.isdir(dest_dir):
@@ -30,11 +45,11 @@ class WindowsInstallTools(InstallTools):
             shutil.rmtree(dest_dir, onerror=handle_remove_read_only)
         unzip_tool_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                        'tools', '7z.exe')
-        cmd = f"{unzip_tool_path} x {self.workspace}\\{self.package_name}"
-        call_command(cmd, cwd=self.workspace)
+        cmd = f"{unzip_tool_path} x {self.install_workspace}\\{self.package_name}"
+        call_command(cmd, cwd=self.install_workspace)
 
     def run_as_admin(self):
-        params = (f'Start-Process "{self.workspace}\\{self.package_name.replace(".zip", "")}'
+        params = (f'Start-Process "{self.install_workspace}\\{self.package_name.replace(".zip", "")}'
                   f'\\Seeyon{self.product_line}Install.bat" -Verb RunAs')
         cmd = f"powershell -Command {params}"
         call_command(cmd)
@@ -57,8 +72,6 @@ class WindowsInstallTools(InstallTools):
                 # window.activate()
                 time.sleep(3)
                 print(f"找到了cmd启动窗口，开始点击确认")
-                screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
-                print(window.left + 10, window.top + 10)
                 pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
                 pyautogui.click()  # 执行物理点击确保焦点
                 pyautogui.hotkey('enter')  # 比单独press更可靠
@@ -83,52 +96,6 @@ class WindowsInstallTools(InstallTools):
 
         print("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
-
-    @retry(tries=3, delay=1)
-    def get_verify_code_window(self):
-        # 获取所有窗口
-        titles = pygetwindow.getAllTitles()
-        for title in titles:
-            if "verify-code.exe" in title:
-                print("找到了验证码窗口")
-                time.sleep(3)  # 等待窗口加载完
-                window = pygetwindow.getWindowsWithTitle(title)[0]
-                window.restore()
-                window.activate()
-                return window
-        raise RuntimeError('没有找到cmd启动窗口')
-
-    def load_verify_code(self):
-        if os.path.isfile(self.verify_code_cache_path):
-            with open(self.verify_code_cache_path, 'r', encoding='utf-8') as f:
-                return f.read().strip()
-        return None
-
-    def write_verify_code(self):
-        with open(self.verify_code_cache_path, 'w', encoding='utf-8') as f:
-            f.write(self.verify_code)
-
-    @retry(tries=5, delay=1)
-    def get_verify_code(self):
-        verify_code = self.load_verify_code()
-        if verify_code:
-            self.verify_code = verify_code
-            print(f"验证码：{self.verify_code}")
-            return
-        self.run_verify_code()
-        time.sleep(5)
-        window = self.get_verify_code_window()
-        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
-        verify_code_text = Agent.verify_code("识别出验证码", to_screenshot_b64(screenshot))
-        window.close()
-        pattern = r'\b\d{5}\b'
-        matches = re.findall(pattern, verify_code_text)
-        if matches:
-            self.verify_code = matches[0]
-            print(f"验证码：{self.verify_code}")
-            self.write_verify_code()
-            return
-        raise Exception(f"AI获取验证码失败")
 
 
 if __name__ == "__main__":
