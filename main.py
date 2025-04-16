@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -31,11 +32,14 @@ def main():
     tools.download()
     tools.unzip_package()
     tools.change_check_config()
+    tools.change_check_version()
+
     tools.run_as_admin()
     install_window = tools.get_install_window()
     tools.install_steps(install_window)
     tools.check_list.check_registry_key()
-    tools.check_list.check_finish_install_path()
+    if len(sys.argv) > 1 and sys.argv[1] == 'check_finish_install_path':
+        tools.check_list.check_finish_install_path()
 
 
 if __name__ == "__main__":

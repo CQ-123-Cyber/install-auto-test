@@ -13,7 +13,7 @@ from utils.cmd_tools import call_command
 from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
 from action.database import get_database_cls
-from action.check_list.windows_check_list import WindowsCheckList
+from utils.time_help import datetime2str_by_format
 
 
 class InstallTools(ConfLoad):
@@ -96,12 +96,37 @@ class InstallTools(ConfLoad):
     def change_check_config(self):
         """修改安装检查项"""
         check_yaml_path = os.path.join(self.check_dir, 'inst', 'check.yml')
-        with open(check_yaml_path, 'r') as file:
-            data = yaml.safe_load(file)
-        data['server']['vm']['warningMemoryMb'] = 0
-        with open(check_yaml_path, 'w') as file:
-            yaml.safe_dump(data, file)
-        print("修改完成，warningMemoryMb 已更改为 0")
+        if os.path.isfile(check_yaml_path):
+            with open(check_yaml_path, 'r') as file:
+                data = yaml.safe_load(file)
+            data['server']['vm']['warningMemoryMb'] = 0
+            with open(check_yaml_path, 'w') as file:
+                yaml.safe_dump(data, file)
+            print("修改完成，warningMemoryMb 已更改为 0")
+
+    def change_check_version(self):
+        """修改安装检查是否是最新版本"""
+        check_path = os.path.join(self.check_dir, 'inst', f'Seeyon{self.product_line.upper()}Install_real.bat')
+        if os.path.isfile(check_path):
+            today_date = datetime2str_by_format(dt_format='%Y-%m-%d')
+            with open(check_path, 'r') as file:
+                lines = file.readlines()
+
+            # 修改日期
+            updated_lines = []
+            for line in lines:
+                if '-Dseeyon_ctp_install_check_date=' in line:
+                    # 使用正则表达式来替换日期
+                    line = line.split('-Dseeyon_ctp_install_check_date=')[
+                               0] + f'-Dseeyon_ctp_install_check_date={today_date} ' + \
+                           line.split('-Dseeyon_ctp_install_check_date=')[1].split(' ')[1]
+                updated_lines.append(line)
+
+            # 写入修改后的内容到一个新的批处理文件
+            with open(check_path, 'w') as file:
+                file.writelines(updated_lines)
+        else:
+            logger.info(f"没有找到修改检查是否最新版本的配置文件：{check_path}")
 
     @staticmethod
     def run_verify_code():

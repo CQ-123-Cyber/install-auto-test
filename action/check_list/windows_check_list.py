@@ -72,6 +72,7 @@ class WindowsCheckList(CheckList):
         """
         安装完成后检查安装目录
         """
+        logger.info("开始安装完成后检查安装目录")
         check_dir_file_list = os.listdir(self.install_path)
         exist_file_list = ['ApacheJetspeed', 'base', 'inst', 'jdk', 'Logs', 'OfficeTrans',
                            'S1', 'seeyontools', 'Uninstall_A8', 'Uninstall_jdk']
