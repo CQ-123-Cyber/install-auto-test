@@ -1,4 +1,5 @@
 import os
+import socket
 import copy
 import subprocess
 from loguru import logger
@@ -31,3 +32,24 @@ def call_command_get_out(cmd, cwd=None, env=None, shell=True):
     out = subprocess.check_output(cmd, cwd=cwd, env=env, shell=shell)
     out_lines = console_to_str(out).strip().split()
     return out_lines
+
+
+def get_local_ip():
+    s = None
+    try:
+        # 这里的 IP 地址和端口号是虚构的，只用来创建一个 UDP 连接以获取本机 IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0)
+        # 远端的地址不需要真实存在，只是为了触发获取本地IP的流程
+        s.connect(('10.254.254.254', 1))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        if s:
+            s.close()
+    return ip
+
+
+if __name__ == "__main__":
+    print(get_local_ip())

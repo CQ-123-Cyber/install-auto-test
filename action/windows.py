@@ -1,10 +1,11 @@
 import os
-import re
+import yaml
 import shutil
 import time
 import pygetwindow
 import pyautogui
 from retry import retry
+from loguru import logger
 
 from action.base import InstallTools
 from utils.cmd_tools import call_command
@@ -13,6 +14,7 @@ from utils.screenshot_tools import to_screenshot_b64
 from utils.file_tools import handle_remove_read_only
 from action.check_list.windows_check_list import WindowsCheckList
 from action.check_list.no_check_list import NoCheckList
+from utils.time_help import datetime2str_by_format
 
 
 class WindowsInstallTools(InstallTools):
@@ -41,12 +43,29 @@ class WindowsInstallTools(InstallTools):
     def unzip_package(self):
         dest_dir = self.check_dir
         if os.path.isdir(dest_dir):
-            print(f"正在删除上一次的安装包解压目录")
+            logger.info(f"正在删除上一次的安装包解压目录")
             shutil.rmtree(dest_dir, onerror=handle_remove_read_only)
         unzip_tool_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                        'tools', '7z.exe')
         cmd = f"{unzip_tool_path} x {self.install_workspace}\\{self.package_name}"
         call_command(cmd, cwd=self.install_workspace)
+
+    def change_check_config(self):
+        """修改安装检查项"""
+        check_yaml_path = os.path.join(self.check_dir, 'inst', 'check.yml')
+        if os.path.isfile(check_yaml_path):
+            self.change_check_config_file(check_yaml_path)
+            print("修改完成，warningMemoryMb 已更改为 0")
+        else:
+            logger.info(f"没有找到修改安装检查项的配置文件：{check_yaml_path}")
+
+    def change_check_version(self):
+        """修改安装检查是否是最新版本"""
+        check_path = os.path.join(self.check_dir, 'inst', f'Seeyon{self.product_line.upper()}Install_real.bat')
+        if os.path.isfile(check_path):
+            self.change_check_version_file(check_path)
+        else:
+            logger.info(f"没有找到修改检查是否最新版本的配置文件：{check_path}")
 
     def run_as_admin(self):
         params = (f'Start-Process "{self.install_workspace}\\{self.package_name.replace(".zip", "")}'
@@ -65,13 +84,13 @@ class WindowsInstallTools(InstallTools):
             if "agent.jar" in title.lower().strip():
                 continue
             if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
-                print("找到了cmd启动窗口")
+                logger.info("找到了cmd启动窗口")
                 find = True
                 window = pygetwindow.getWindowsWithTitle(title)[0]
                 window.restore()
                 # window.activate()
                 time.sleep(3)
-                print(f"找到了cmd启动窗口，开始点击确认")
+                logger.info(f"找到了cmd启动窗口，开始点击确认")
                 pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
                 pyautogui.click()  # 执行物理点击确保焦点
                 pyautogui.hotkey('enter')  # 比单独press更可靠
@@ -83,21 +102,21 @@ class WindowsInstallTools(InstallTools):
         try:
             self.get_cmd_window()
         except Exception as err:
-            print(repr(err))
+            logger.error(repr(err))
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
         for title in titles:
             # if self.version in title and "安装程序" in title:
             if "安装程序" in title:
-                print("找到了InstallAnywhere安装窗口")
+                logger.info("找到了InstallAnywhere安装窗口")
                 time.sleep(5)  # 等待窗口加载完
                 window = pygetwindow.getWindowsWithTitle(title)[0]
                 return window
 
-        print("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
+        logger.info("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
 
 
 if __name__ == "__main__":
     tool = WindowsInstallTools()
-    print(tool.delete_registry_key())
+    logger.info(tool.delete_registry_key())

@@ -36,6 +36,37 @@ class SSHClient():
             if hasattr(self, "channel") and hasattr(self.channel, "close"):
                 self.channel.close()
 
+    def upload_file(self, local_path, remote_path):
+        try:
+            sftp = self.ssh.open_sftp()
+            sftp.put(local_path, remote_path)
+            sftp.close()
+            print(f"文件 {local_path} 上传到 {remote_path} 成功")
+        except Exception as e:
+            raise RuntimeError(f"上传 {local_path} 到 {remote_path} 失败: {repr(e)}")
+
+    def download_file(self, remote_path, local_path):
+        try:
+            sftp = self.ssh.open_sftp()
+            sftp.get(remote_path, local_path)
+            sftp.close()
+            print(f"文件 {remote_path} 下载到 {local_path} 成功")
+        except Exception as e:
+            raise RuntimeError(f"下载 {remote_path} 到 {local_path} 失败: {repr(e)}")
+
+    def remote_file_exists(self, remote_path):
+        try:
+            sftp = self.ssh.open_sftp()
+            try:
+                sftp.stat(remote_path)
+                file_exists = True
+            except FileNotFoundError:
+                file_exists = False
+            sftp.close()
+            return file_exists
+        except Exception as e:
+            raise RuntimeError(f"判断远程文件 {remote_path} 是否存在时出错: {repr(e)}")
+
     def __del__(self):
         if hasattr(self, "ssh") and hasattr(self.ssh, "close"):
             self.ssh.close()

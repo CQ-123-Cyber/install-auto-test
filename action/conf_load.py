@@ -38,7 +38,7 @@ class ConfLoad:
         # 按天缓存验证码，验证码每天修改一次
         self.verify_code_cache_path = f'verify_code_cache.{datetime2str_by_format(dt_format="%Y-%m-%d")}'
         # 安装包解压目录
-        self.check_dir = f'{self.install_workspace}\\{self.package_name.replace(".zip", "")}'
+        self.check_dir = f'{self.install_workspace}/{self.package_name.replace(".zip", "")}'
         self.screenshots_dir = self.get_screenshots_dir()
 
         # 基准截图目录
