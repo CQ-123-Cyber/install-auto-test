@@ -13,7 +13,7 @@ def console_to_str(s):
 
 
 def call_command(cmd, cwd=None, env=None, shell=True):
-    logger.info("cmd:", str(cmd))
+    logger.info("cmd:" + str(cmd))
     new_env = env
     if env and isinstance(env, dict):
         now_env = copy.deepcopy(os.environ.copy())

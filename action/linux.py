@@ -10,9 +10,7 @@ from loguru import logger
 import multiprocessing
 
 from action.base import InstallTools
-from utils.cmd_tools import get_local_ip
-from agent.agent import Agent
-from utils.screenshot_tools import to_screenshot_b64
+from utils.cmd_tools import get_local_ip, call_command
 from utils.ssh_tools import get_ssh_client
 from action.check_list.linux_check_list import LinuxCheckList
 from action.check_list.no_check_list import NoCheckList
@@ -91,6 +89,11 @@ class LinuxInstallTools(InstallTools):
 
     def run_as_admin(self):
         """使用多进程运行安装程序"""
+        subprocess.call('taskkill /IM Xmanager.exe /F', shell=True)
+        xmanager_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'tools',
+                                     'xmanager.xdts')
+        subprocess.Popen(xmanager_path, shell=True)
+        logger.info("xmanager.xdts启动成功")
         process = multiprocessing.Process(target=run_as_admin_with_multiprocessing,
                                           args=(self.check_dir, self.product_line,))
         process.start()
@@ -176,6 +179,7 @@ class LinuxInstallTools(InstallTools):
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.write('Ab123456', interval=0.1)
+
 
 if __name__ == "__main__":
     tools = LinuxInstallTools()

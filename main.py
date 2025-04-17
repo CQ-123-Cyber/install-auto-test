@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from loguru import logger
+import subprocess
 
 from action.windows import WindowsInstallTools
 from action.linux import LinuxInstallTools
@@ -32,19 +33,21 @@ def main():
     logger.info(f"开始删除安装目标目录")
     tools.delete_install_path()
     tools.delete_registry_key()
-    tools.download()
-    tools.unzip_package()
+    # tools.download()
+    # tools.unzip_package()
     tools.change_check_config()
     tools.change_check_version()
 
-    process = tools.run_as_admin()
+    process = None
     try:
+        process = tools.run_as_admin()
         install_window = tools.get_install_window()
         tools.install_steps(install_window)
         tools.check_list.check_registry_key()
     finally:
         if process:
             process.terminate()
+        subprocess.call('taskkill /IM Xmanager.exe /F', shell=True)
 
 
 if __name__ == "__main__":
