@@ -2,10 +2,10 @@ import os
 import sys
 from dotenv import load_dotenv
 from loguru import logger
-import subprocess
 
 from action.windows import WindowsInstallTools
 from action.linux import LinuxInstallTools
+from utils.cmd_tools import getoutput
 
 
 def main():
@@ -47,7 +47,7 @@ def main():
     finally:
         if process:
             process.terminate()
-        subprocess.call('taskkill /IM Xmanager.exe /F', shell=True)
+        getoutput('taskkill /IM Xmanager.exe /F')
 
 
 if __name__ == "__main__":

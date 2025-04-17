@@ -10,7 +10,7 @@ from loguru import logger
 import multiprocessing
 
 from action.base import InstallTools
-from utils.cmd_tools import get_local_ip, call_command
+from utils.cmd_tools import get_local_ip, getoutput
 from utils.ssh_tools import get_ssh_client
 from action.check_list.linux_check_list import LinuxCheckList
 from action.check_list.no_check_list import NoCheckList
@@ -89,7 +89,7 @@ class LinuxInstallTools(InstallTools):
 
     def run_as_admin(self):
         """使用多进程运行安装程序"""
-        subprocess.call('taskkill /IM Xmanager.exe /F', shell=True)
+        getoutput('taskkill /IM Xmanager.exe /F')
         xmanager_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'tools',
                                      'xmanager.xdts')
         subprocess.Popen(xmanager_path, shell=True)

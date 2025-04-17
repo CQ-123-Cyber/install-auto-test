@@ -28,6 +28,10 @@ def call_command(cmd, cwd=None, env=None, shell=True):
         raise RuntimeError("cmd命令执行失败")
 
 
+def getoutput(cmd):
+    logger.info(subprocess.getoutput(cmd))
+
+
 def call_command_get_out(cmd, cwd=None, env=None, shell=True):
     out = subprocess.check_output(cmd, cwd=cwd, env=env, shell=shell)
     out_lines = console_to_str(out).strip().split()
