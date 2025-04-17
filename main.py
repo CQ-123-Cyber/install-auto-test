@@ -33,8 +33,8 @@ def main():
     logger.info(f"开始删除安装目标目录")
     tools.delete_install_path()
     tools.delete_registry_key()
-    tools.download()
-    tools.unzip_package()
+    # tools.download()
+    # tools.unzip_package()
     tools.change_check_config()
     tools.change_check_version()
 
