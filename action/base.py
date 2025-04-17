@@ -21,6 +21,7 @@ class InstallTools(ConfLoad):
     def __init__(self):
         super().__init__()
         self.check_list = None
+        self.print_var()
 
     def download(self):
         """下载安装程序"""
