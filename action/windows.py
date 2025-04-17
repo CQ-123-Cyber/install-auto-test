@@ -158,6 +158,12 @@ class WindowsInstallTools(InstallTools):
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.write('Ab123456', interval=0.1)
 
+    def copy_soft_dog(self):
+        soft_dog_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                     'utils', 'partaletindev.js')
+        remote_path = f"{self.install_path}\ApacheJetspeed\webapps\seeyon\common\js\\ui\partaletindev.js"
+        shutil.copyfile(soft_dog_path, remote_path)
+
 
 if __name__ == "__main__":
     tool = WindowsInstallTools()

@@ -44,6 +44,7 @@ def main():
         install_window = tools.get_install_window()
         tools.install_steps(install_window)
         tools.check_list.check_registry_key()
+        tools.copy_soft_dog()
     finally:
         if process:
             process.terminate()

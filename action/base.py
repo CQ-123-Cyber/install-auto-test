@@ -393,3 +393,7 @@ class InstallTools(ConfLoad):
     def password_info_input(self, window):
         # 初始化管理员账号
         pass
+
+    @abstractmethod
+    def copy_soft_dog(self):
+        """复制加密狗"""
