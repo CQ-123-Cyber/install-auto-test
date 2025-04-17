@@ -86,7 +86,7 @@ class WindowsInstallTools(InstallTools):
             # if self.version in title and "安装程序" in title:
             if "安装程序" in title:
                 logger.info("找到了InstallAnywhere安装窗口")
-                time.sleep(5)  # 等待窗口加载完
+                time.sleep(15)  # 等待窗口加载完
                 window = pygetwindow.getWindowsWithTitle(title)[0]
                 return window
 
