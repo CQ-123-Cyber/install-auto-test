@@ -93,3 +93,6 @@ class LinuxCheckList(CheckList):
         else:
             logger.error(f"注册表验证失败，{registry_file_path}不存在")
             raise
+
+    def check_finish_install_path(self):
+        pass

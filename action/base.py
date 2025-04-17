@@ -194,7 +194,7 @@ class InstallTools(ConfLoad):
         window.restore()
         window.activate()
         time.sleep(5)
-        print(window.left, window.top, window.width, window.height)
+        logger.info(f"安装窗口位置：{window.left}, {window.top}, {window.width}, {window.height}")
 
         self.check_list.check_install_dir()
         self.change_language()
