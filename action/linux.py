@@ -124,7 +124,7 @@ class LinuxInstallTools(InstallTools):
         time.sleep(1)
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        self.agent_verify(task, screenshot)
+        self.agent_verify(window, task)
 
     def welcome_no_accept(self, window):
         """选择欢迎-不接受"""

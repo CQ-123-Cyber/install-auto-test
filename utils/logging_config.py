@@ -4,10 +4,6 @@ import logging
 from types import FrameType
 from typing import cast
 from loguru import logger
-from dotenv import load_dotenv
-
-# 加载项目中的.env文件到环境变量
-load_dotenv()
 
 
 class InterceptHandler(logging.Handler):
