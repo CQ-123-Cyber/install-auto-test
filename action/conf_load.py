@@ -46,7 +46,7 @@ class ConfLoad:
 
         # 基准截图目录
         self.base_screenshots_dir = os.path.join(self.install_workspace, 'base_screenshots', self.version,
-                                                 self.product_line)
+                                                 self.product_line, self.os_system)
 
     def get_screenshots_dir(self):
         screenshots_dir = os.path.join(self.install_workspace, 'screenshots')

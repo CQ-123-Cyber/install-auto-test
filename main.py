@@ -8,8 +8,7 @@ from action.linux import LinuxInstallTools
 
 
 def main():
-    os_system = os.getenv('os_system', 'windows')
-    os_system = 'linux'
+    os_system = os.getenv('os_system', 'linux')
     logger.info(f"从环境变量识别到os_system={os_system}")
     dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', os_system, '.env')
     if not os.path.isfile(dotenv_path):
@@ -23,6 +22,10 @@ def main():
     else:
         raise Exception(f"操作系统待实现：{os_system}")
 
+    if len(sys.argv) > 1 and sys.argv[1] == 'check_finish_install_path':
+        tools.check_list.check_finish_install_path()
+        return
+
     assert isinstance(tools, LinuxInstallTools)  # 开发调试用
     logger.info(f"开始验证码")
     tools.get_verify_code()
@@ -34,14 +37,11 @@ def main():
     tools.change_check_config()
     tools.change_check_version()
 
-    process = None
     process = tools.run_as_admin()
     try:
         install_window = tools.get_install_window()
         tools.install_steps(install_window)
         tools.check_list.check_registry_key()
-        if len(sys.argv) > 1 and sys.argv[1] == 'check_finish_install_path':
-            tools.check_list.check_finish_install_path()
     finally:
         if process:
             process.terminate()

@@ -141,8 +141,10 @@ class InstallTools(ConfLoad):
         call_command(cmd)
 
     @retry(tries=3, delay=5)
-    def agent_verify(self, task, screenshot):
+    def agent_verify(self, window, task):
         if self.ai_verify:
+            screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+            screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
             content = Agent.verify(task, to_screenshot_b64(screenshot))
             if content:
                 status = content['status']
@@ -210,7 +212,7 @@ class InstallTools(ConfLoad):
         self.click_next_step(window, "数据库", "确认")
         self.click_next_step(window, "确认", "确认")
         self.click_next_step(window, "确认", "安装")
-        time.sleep(60 * 5)  # 等待安装
+        time.sleep(60 * 4)  # 等待安装
         self.install_finish(window)
 
         self.check_list.check_password_info_input(window)
@@ -243,15 +245,10 @@ class InstallTools(ConfLoad):
         """选择欢迎-接受"""
         pass
 
+    @abstractmethod
     def welcome_no_accept(self, window):
         """选择欢迎-不接受"""
-        task = "选择欢迎-不接受"
-        position = (373, 346)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        time.sleep(1)
-        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
-        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+        pass
 
     def welcome_no_accept_warn_continue(self, window):
         """选择欢迎-不接受-警告-继续执行"""
@@ -269,13 +266,13 @@ class InstallTools(ConfLoad):
         position = (549, 407)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
-        time.sleep(3)
         screenshot = None
+        time.sleep(3)
         if is_save:
             screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
             screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
         if is_verify and screenshot:
-            self.agent_verify(task, screenshot)
+            self.agent_verify(window, task)
 
     def click_last_step(self, window, frame_name, next_frame_name):
         """点击上一步"""
@@ -311,7 +308,7 @@ class InstallTools(ConfLoad):
         time.sleep(1)
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        self.agent_verify(task, screenshot)
+        self.agent_verify(window, task)
 
     def database_input(self, window):
         task = "设置数据库-input"
@@ -378,7 +375,7 @@ class InstallTools(ConfLoad):
 
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        self.agent_verify(task, screenshot)
+        self.agent_verify(window, task)
 
     @retry(tries=15, delay=60)
     def install_finish(self, window):
@@ -391,46 +388,7 @@ class InstallTools(ConfLoad):
             if status == "不正确":
                 raise RuntimeError(f"使用AI验证操作结果不正确：\n{content}")
 
+    @abstractmethod
     def password_info_input(self, window):
         # 初始化管理员账号
-        position = (459, 103)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('init-admin', interval=0.1)
-
-        position = (459, 135)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 167)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 223)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 255)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 287)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 319)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
+        pass

@@ -103,4 +103,4 @@ class CheckList(ConfLoad):
 
         self.install_tool.click_last_step(window, "安装", "确认")
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
-        self.agent_check('当前处于安装-账号密码设置界面', screenshot)
+        self.agent_check('当前处于安装步骤-账号密码设置界面', screenshot)

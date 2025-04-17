@@ -13,13 +13,9 @@ from action.base import InstallTools
 from utils.cmd_tools import get_local_ip
 from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
-from utils.ssh_tools import SSHClient
+from utils.ssh_tools import get_ssh_client
 from action.check_list.linux_check_list import LinuxCheckList
 from action.check_list.no_check_list import NoCheckList
-
-
-def get_ssh_client():
-    return SSHClient(ip='192.168.225.11', port=15051, password='seeyon@123..', username='root')
 
 
 def run_as_admin_with_multiprocessing(check_dir, product_line):
@@ -53,7 +49,8 @@ class LinuxInstallTools(InstallTools):
         self.exec_cmd(cmd)
 
     def delete_registry_key(self):
-        pass
+        cmd = f'rm -rf /root/.config/seeyoninstall*'
+        self.exec_cmd(cmd)
 
     def download(self):
         """下载安装程序"""
@@ -118,7 +115,7 @@ class LinuxInstallTools(InstallTools):
     def welcome_accept(self, window):
         """选择欢迎-接受"""
         task = "选择欢迎-接受，等待点击下一步"
-        position = (228, 319)
+        position = (229, 319)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         time.sleep(1)
@@ -126,6 +123,59 @@ class LinuxInstallTools(InstallTools):
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
         self.agent_verify(task, screenshot)
 
+    def welcome_no_accept(self, window):
+        """选择欢迎-不接受"""
+        task = "选择欢迎-不接受"
+        position = (229, 346)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        time.sleep(1)
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+
+    def password_info_input(self, window):
+        # 初始化管理员账号
+        position = (459, 93)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('init-admin', interval=0.1)
+
+        position = (459, 124)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 153)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 209)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 237)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 267)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 295)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
 
 if __name__ == "__main__":
     tools = LinuxInstallTools()

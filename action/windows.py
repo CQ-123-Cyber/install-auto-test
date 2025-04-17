@@ -104,6 +104,60 @@ class WindowsInstallTools(InstallTools):
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
         self.agent_verify(task, screenshot)
 
+    def welcome_no_accept(self, window):
+        """选择欢迎-不接受"""
+        task = "选择欢迎-不接受"
+        position = (373, 346)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        time.sleep(1)
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+
+    def password_info_input(self, window):
+        # 初始化管理员账号
+        position = (459, 103)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('init-admin', interval=0.1)
+
+        position = (459, 135)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 167)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 223)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 255)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 287)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
+        position = (459, 319)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write('Ab123456', interval=0.1)
+
 
 if __name__ == "__main__":
     tool = WindowsInstallTools()
