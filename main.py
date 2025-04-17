@@ -27,7 +27,7 @@ def main():
         tools.check_list.check_finish_install_path()
         return
 
-    assert isinstance(tools, LinuxInstallTools)  # 开发调试用
+    # assert isinstance(tools, LinuxInstallTools)  # 开发调试用
     logger.info(f"开始验证码")
     tools.get_verify_code()
     logger.info(f"开始删除安装目标目录")
