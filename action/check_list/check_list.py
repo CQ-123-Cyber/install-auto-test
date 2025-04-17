@@ -28,6 +28,7 @@ class CheckList(ConfLoad):
     @retry(tries=3, delay=1)
     def agent_check(self, task, screenshot):
         if self.ai_verify:
+            screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
             content = Agent.check(task, to_screenshot_b64(screenshot))
             if content:
                 status = content['status']
