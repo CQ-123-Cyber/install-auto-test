@@ -7,6 +7,7 @@ import winreg
 import pyautogui
 from retry import retry
 from loguru import logger
+import multiprocessing
 
 from action.base import InstallTools
 from utils.cmd_tools import get_local_ip
@@ -17,11 +18,24 @@ from action.check_list.linux_check_list import LinuxCheckList
 from action.check_list.no_check_list import NoCheckList
 
 
+def get_ssh_client():
+    return SSHClient(ip='192.168.225.11', port=15051, password='seeyon@123..', username='root')
+
+
+def run_as_admin_with_multiprocessing(check_dir, product_line):
+    local_ip = get_local_ip()
+    logger.info(f'获取到本机ip：{local_ip}')
+    ssh_client = get_ssh_client()
+    code, msg = ssh_client.exec_command(
+        f'cd {check_dir} && export DISPLAY={local_ip}:0.0;bash Seeyon{product_line}Install.sh')
+    logger.info(msg)
+
+
 class LinuxInstallTools(InstallTools):
     def __init__(self):
         super().__init__()
         self.check_list = LinuxCheckList(self) if self.is_check_list == True else NoCheckList(self)
-        self.ssh_client = SSHClient(ip='192.168.225.11', port=15051, password='seeyon@123..', username='root')
+        self.ssh_client = get_ssh_client()
         self.exec_cmd(f'mkdir -p {self.install_workspace}')
 
     def exec_cmd(self, cmd):
@@ -79,12 +93,38 @@ class LinuxInstallTools(InstallTools):
             logger.info(f"没有找到修改检查是否最新版本的配置文件：{check_path}")
 
     def run_as_admin(self):
-        """使用管理员运行安装程序"""
-        local_ip = get_local_ip()
-        logger.info(f'获取到本机ip：{local_ip}')
-        code,msg = self.ssh_client.exec_command(
-            f'cd {self.check_dir} && export DISPLAY={local_ip}:0.0;bash Seeyon{self.product_line}Install.sh')
-        print(msg)
+        """使用多进程运行安装程序"""
+        process = multiprocessing.Process(target=run_as_admin_with_multiprocessing,
+                                          args=(self.check_dir, self.product_line,))
+        process.start()
+        return process
+
+    @retry(tries=15, delay=2)
+    def get_install_window(self):
+        logger.info(f"开始等待获取安装程序窗口")
+        # 获取所有窗口
+        titles = pygetwindow.getAllTitles()
+        for title in titles:
+            # if self.version in title and "安装程序" in title:
+            if "安装程序" in title:
+                logger.info("找到了InstallAnywhere安装窗口")
+                time.sleep(10)  # 等待窗口加载完
+                window = pygetwindow.getWindowsWithTitle(title)[0]
+                return window
+
+        logger.info("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
+        raise RuntimeError('没有找到InstallAnywhere安装窗口')
+
+    def welcome_accept(self, window):
+        """选择欢迎-接受"""
+        task = "选择欢迎-接受，等待点击下一步"
+        position = (228, 319)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        time.sleep(1)
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+        self.agent_verify(task, screenshot)
 
 
 if __name__ == "__main__":

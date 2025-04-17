@@ -14,6 +14,7 @@ from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
 from action.database import get_database_cls
 from utils.time_help import datetime2str_by_format
+from utils.language_tools import switch_input_method
 
 
 class InstallTools(ConfLoad):
@@ -149,12 +150,41 @@ class InstallTools(ConfLoad):
                     raise RuntimeError(f"使用AI验证操作结果不正确：\n{content}")
 
     @staticmethod
+    # @retry(tries=12, delay=10)
+    def get_cmd_window():
+        # 获取所有窗口
+        titles = pygetwindow.getAllTitles()
+        find = False
+        for title in titles:
+            # jenkins的agent窗口忽略
+            if "agent.jar" in title.lower().strip():
+                continue
+            if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
+                logger.info("找到了cmd启动窗口")
+                find = True
+                window = pygetwindow.getWindowsWithTitle(title)[0]
+                window.restore()
+                # window.activate()
+                time.sleep(3)
+                logger.info(f"找到了cmd启动窗口，开始点击确认")
+                pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
+                pyautogui.click()  # 执行物理点击确保焦点
+                pyautogui.hotkey('enter')  # 比单独press更可靠
+        if not find:
+            raise RuntimeError('没有找到cmd启动窗口')
+
+    @abstractmethod
+    def get_install_window(self):
+        pass
+
+    @staticmethod
     def change_language():
         screenshot = pyautogui.screenshot()
         language = Agent.language("输入法是中文还是英文", to_screenshot_b64(screenshot))
         if language == "中文":
-            print("切换输入法到英文")
-            pyautogui.hotkey('shift')
+            logger.info("切换输入法到英文")
+            # pyautogui.hotkey('shift')
+            switch_input_method()
             time.sleep(1)
 
     def install_steps(self, window):
@@ -208,16 +238,10 @@ class InstallTools(ConfLoad):
         new_position = (new_x, new_y)
         return new_position
 
+    @abstractmethod
     def welcome_accept(self, window):
         """选择欢迎-接受"""
-        task = "选择欢迎-接受，等待点击下一步"
-        position = (373, 319)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        time.sleep(1)
-        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
-        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-        self.agent_verify(task, screenshot)
+        pass
 
     def welcome_no_accept(self, window):
         """选择欢迎-不接受"""
@@ -283,7 +307,7 @@ class InstallTools(ConfLoad):
 
     def install_path_input(self, window):
         task = "设置安装路径-input"
-        pyautogui.typewrite(self.install_path, interval=0.1)
+        pyautogui.write(self.install_path, interval=0.1)
         time.sleep(1)
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
@@ -298,9 +322,10 @@ class InstallTools(ConfLoad):
         if self.has_verify_code:
             position = (321, 133)
         else:
-            position = (321, 148)
+            position = (321, 146)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
         pyautogui.write(sql_cls.host, interval=0.1)
 
         # 设置端口
@@ -320,6 +345,7 @@ class InstallTools(ConfLoad):
             position = (321, 200)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
         pyautogui.write(sql_cls.database_name, interval=0.1)
 
         # 设置用户名
@@ -329,6 +355,7 @@ class InstallTools(ConfLoad):
             position = (321, 226)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
         pyautogui.write(sql_cls.user, interval=0.1)
 
         # 设置密码
@@ -338,6 +365,7 @@ class InstallTools(ConfLoad):
             position = (321, 252)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
         pyautogui.write(sql_cls.password, interval=0.1)
 
         # 验证码
@@ -345,6 +373,7 @@ class InstallTools(ConfLoad):
             position = (321, 300)
             position = self.scale_up_and_down(position, window.width, window.height)
             pyautogui.click(window.left + position[0], window.top + position[1])
+            pyautogui.hotkey('ctrl', 'a')
             pyautogui.write(self.verify_code, interval=0.1)
 
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))

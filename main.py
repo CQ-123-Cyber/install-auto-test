@@ -25,21 +25,26 @@ def main():
 
     assert isinstance(tools, LinuxInstallTools)  # 开发调试用
     logger.info(f"开始验证码")
-    # tools.get_verify_code()
-    # logger.info(f"开始删除安装目标目录")
-    # tools.delete_install_path()
-    # tools.delete_registry_key()
-    # tools.download()
-    # tools.unzip_package()
-    # tools.change_check_config()
-    # tools.change_check_version()
+    tools.get_verify_code()
+    logger.info(f"开始删除安装目标目录")
+    tools.delete_install_path()
+    tools.delete_registry_key()
+    tools.download()
+    tools.unzip_package()
+    tools.change_check_config()
+    tools.change_check_version()
 
-    tools.run_as_admin()
-    # install_window = tools.get_install_window()
-    # tools.install_steps(install_window)
-    # tools.check_list.check_registry_key()
-    # if len(sys.argv) > 1 and sys.argv[1] == 'check_finish_install_path':
-    #     tools.check_list.check_finish_install_path()
+    process = None
+    process = tools.run_as_admin()
+    try:
+        install_window = tools.get_install_window()
+        tools.install_steps(install_window)
+        tools.check_list.check_registry_key()
+        if len(sys.argv) > 1 and sys.argv[1] == 'check_finish_install_path':
+            tools.check_list.check_finish_install_path()
+    finally:
+        if process:
+            process.terminate()
 
 
 if __name__ == "__main__":

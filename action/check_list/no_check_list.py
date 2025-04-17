@@ -11,6 +11,9 @@ class NoCheckList(ConfLoad):
         super().__init__()
         self.install_tool = install_tool
 
+    def check_install_dir(self):
+        pass
+
     def agent_check_from_base(self, task, screenshot, base_screenshot):
         pass
 

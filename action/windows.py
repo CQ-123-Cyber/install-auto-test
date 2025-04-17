@@ -73,32 +73,9 @@ class WindowsInstallTools(InstallTools):
         cmd = f"powershell -Command {params}"
         call_command(cmd)
 
-    @staticmethod
-    # @retry(tries=12, delay=10)
-    def get_cmd_window():
-        # 获取所有窗口
-        titles = pygetwindow.getAllTitles()
-        find = False
-        for title in titles:
-            # jenkins的agent窗口忽略
-            if "agent.jar" in title.lower().strip():
-                continue
-            if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
-                logger.info("找到了cmd启动窗口")
-                find = True
-                window = pygetwindow.getWindowsWithTitle(title)[0]
-                window.restore()
-                # window.activate()
-                time.sleep(3)
-                logger.info(f"找到了cmd启动窗口，开始点击确认")
-                pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
-                pyautogui.click()  # 执行物理点击确保焦点
-                pyautogui.hotkey('enter')  # 比单独press更可靠
-        if not find:
-            raise RuntimeError('没有找到cmd启动窗口')
-
     @retry(tries=15, delay=2)
     def get_install_window(self):
+        logger.info(f"开始等待获取安装程序窗口")
         try:
             self.get_cmd_window()
         except Exception as err:
@@ -115,6 +92,17 @@ class WindowsInstallTools(InstallTools):
 
         logger.info("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
+
+    def welcome_accept(self, window):
+        """选择欢迎-接受"""
+        task = "选择欢迎-接受，等待点击下一步"
+        position = (373, 319)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        time.sleep(1)
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+        self.agent_verify(task, screenshot)
 
 
 if __name__ == "__main__":

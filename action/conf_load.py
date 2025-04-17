@@ -33,6 +33,9 @@ class ConfLoad:
         self.sql_type = os.getenv('sql_type')
         if not self.sql_type:
             raise Exception(f"没有找到环境变量：sql_type")
+        self.os_system = os.getenv('os_system')
+        if not self.os_system:
+            raise Exception(f"没有找到环境变量：os_system")
 
         self.verify_code = ''
         # 按天缓存验证码，验证码每天修改一次
