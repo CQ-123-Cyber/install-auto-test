@@ -8,7 +8,7 @@ from retry import retry
 from loguru import logger
 
 from action.base import InstallTools
-from utils.cmd_tools import call_command
+from utils.cmd_tools import call_command, getoutput
 from agent.agent import Agent
 from utils.screenshot_tools import to_screenshot_b64
 from utils.file_tools import handle_remove_read_only
@@ -24,14 +24,16 @@ class WindowsInstallTools(InstallTools):
 
     def delete_install_path(self):
         if os.path.isdir(self.install_path):
-            shutil.rmtree(self.install_path, onerror=handle_remove_read_only)
+            params = f'Remove-Item -LiteralPath "{self.install_path}" -Force -Recurse'
+            cmd = f"powershell -Command {params}"
+            call_command(cmd)
 
     @staticmethod
     def delete_registry_key():
         try:
-            params = (f'Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\SEEYON" -Recurse -Force')
+            params = f'Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\SEEYON" -Recurse -Force'
             cmd = f"powershell -Command {params}"
-            call_command(cmd)
+            getoutput(cmd)
         except:
             pass
 
