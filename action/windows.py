@@ -87,7 +87,7 @@ class WindowsInstallTools(InstallTools):
             if "安装程序" in title:
                 logger.info("找到了InstallAnywhere安装窗口")
                 time.sleep(15)  # 等待窗口加载完
-                window = pygetwindow.getWindowsWithTitle(title)[0]
+                window = self.get_windows_use_title(title)
                 return window
 
         logger.info("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")

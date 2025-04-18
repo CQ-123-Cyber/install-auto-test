@@ -153,8 +153,15 @@ class InstallTools(ConfLoad):
                     raise RuntimeError(f"使用AI验证操作结果不正确：\n{content}")
 
     @staticmethod
+    def get_windows_use_title(title):
+        window = pygetwindow.getWindowsWithTitle(title)[0]
+        window.restore()
+        if window.isActive is False:
+            pyautogui.click(window.activate())
+        return window
+
     # @retry(tries=12, delay=10)
-    def get_cmd_window():
+    def get_cmd_window(self):
         # 获取所有窗口
         titles = pygetwindow.getAllTitles()
         find = False
@@ -165,9 +172,7 @@ class InstallTools(ConfLoad):
             if title.lower().strip() == "C:\WINDOWS\system32\cmd.exe".lower():
                 logger.info("找到了cmd启动窗口")
                 find = True
-                window = pygetwindow.getWindowsWithTitle(title)[0]
-                window.restore()
-                # window.activate()
+                window = self.get_windows_use_title(title)
                 time.sleep(3)
                 logger.info(f"找到了cmd启动窗口，开始点击确认")
                 pyautogui.moveTo(window.left + 10, window.top + 10)  # 将鼠标移动到窗口内
