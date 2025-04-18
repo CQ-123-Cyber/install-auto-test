@@ -188,13 +188,15 @@ class InstallTools(ConfLoad):
 
     @staticmethod
     def change_language():
-        screenshot = pyautogui.screenshot()
-        language = Agent.language("输入法是中文还是英文", to_screenshot_b64(screenshot))
-        if language == "中文":
-            logger.info("切换输入法到英文")
-            pyautogui.hotkey('shift')
-            switch_input_method()
-            time.sleep(1)
+        switch_input_method()
+        time.sleep(1)
+        # screenshot = pyautogui.screenshot()
+        # language = Agent.language("输入法是中文还是英文", to_screenshot_b64(screenshot))
+        # if language == "中文":
+        #     logger.info("切换输入法到英文")
+        #     # pyautogui.hotkey('shift')
+        #     switch_input_method()
+        #     time.sleep(1)
 
     def install_steps(self, window):
         window.restore()
