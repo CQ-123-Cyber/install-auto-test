@@ -192,7 +192,7 @@ class InstallTools(ConfLoad):
         language = Agent.language("输入法是中文还是英文", to_screenshot_b64(screenshot))
         if language == "中文":
             logger.info("切换输入法到英文")
-            # pyautogui.hotkey('shift')
+            pyautogui.hotkey('shift')
             switch_input_method()
             time.sleep(1)
 
