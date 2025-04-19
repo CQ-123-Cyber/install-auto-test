@@ -53,5 +53,4 @@ def main():
 
 
 if __name__ == "__main__":
-    s = Oracle()
-    s.create_database('install_20250418162751', 'Seeyon123456')
+    main()

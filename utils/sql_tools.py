@@ -3,7 +3,7 @@ import re
 import traceback
 from typing import List
 from sqlalchemy import create_engine
-import jaydebeapi
+import jaydebeapi  # 安装<<微软VC++运行库集合>>，可以直接使用360软件管家搜索安装，问题直接解决！
 
 from conf import constant
 import models
