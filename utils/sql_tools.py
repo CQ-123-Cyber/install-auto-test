@@ -23,7 +23,7 @@ class SqlExecutor:
     def register(self):
         self.scheduler = {
             models.SqlTypeEnum.MYSQL: self.mysql,
-            # models.SqlTypeEnum.ORACLE: self.oracle,
+            models.SqlTypeEnum.ORACLE: self.oracle,
             # models.SqlTypeEnum.DM: self.dm,
             # models.SqlTypeEnum.KINGBASE: self.kingbase8,
             # models.SqlTypeEnum.GBASE: self.gbasedbt,

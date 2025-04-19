@@ -15,6 +15,7 @@ from utils.screenshot_tools import to_screenshot_b64
 from action.database import get_database_cls
 from utils.time_help import datetime2str_by_format
 from utils.language_tools import switch_input_method
+from models.enum_model import SqlTypeEnum
 
 
 class InstallTools(ConfLoad):
@@ -323,6 +324,23 @@ class InstallTools(ConfLoad):
         task = "设置数据库-input"
         sql_cls = get_database_cls(self.sql_type)
         sql_cls.create_database()
+        input_data = sql_cls.get_input_data()
+
+        # 设置数据库类型
+        if self.sql_type == SqlTypeEnum.ORACLE.value:
+            logger.info(f'切换数据库类型到：{self.sql_type}')
+            if self.has_verify_code:
+                position = (545, 107)
+            else:
+                position = (545, 118)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+            if self.has_verify_code:
+                position = (321, None)  # 等待适配
+            else:
+                position = (321, 166)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
 
         # 设置host
         if self.has_verify_code:
@@ -332,7 +350,7 @@ class InstallTools(ConfLoad):
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write(sql_cls.host, interval=0.1)
+        pyautogui.write(input_data['host'], interval=0.1)
 
         # 设置端口
         if self.has_verify_code:
@@ -342,7 +360,7 @@ class InstallTools(ConfLoad):
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write(sql_cls.port, interval=0.1)
+        pyautogui.write(input_data['port'], interval=0.1)
 
         # 设置数据库名称
         if self.has_verify_code:
@@ -352,7 +370,7 @@ class InstallTools(ConfLoad):
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write(sql_cls.database_name, interval=0.1)
+        pyautogui.write(input_data['database_name'], interval=0.1)
 
         # 设置用户名
         if self.has_verify_code:
@@ -362,7 +380,7 @@ class InstallTools(ConfLoad):
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write(sql_cls.user, interval=0.1)
+        pyautogui.write(input_data['user'], interval=0.1)
 
         # 设置密码
         if self.has_verify_code:
@@ -372,7 +390,7 @@ class InstallTools(ConfLoad):
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write(sql_cls.password, interval=0.1)
+        pyautogui.write(input_data['password'], interval=0.1)
 
         # 验证码
         if self.has_verify_code:
