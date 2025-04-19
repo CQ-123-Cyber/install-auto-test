@@ -93,6 +93,8 @@ class WindowsInstallTools(InstallTools):
                 return window
 
         logger.info("没有找到InstallAnywhere安装窗口，继续点击cmd启动窗口")
+        screenshot = pyautogui.screenshot()
+        screenshot.save(os.path.join(self.screenshots_dir, 'cur_agent_check.png'))
         raise RuntimeError('没有找到InstallAnywhere安装窗口')
 
     def welcome_accept(self, window):
