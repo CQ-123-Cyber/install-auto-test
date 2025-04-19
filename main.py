@@ -6,6 +6,7 @@ from loguru import logger
 from action.windows import WindowsInstallTools
 from action.linux import LinuxInstallTools
 from utils.cmd_tools import getoutput
+from action.sql_action.oracle import Oracle
 
 
 def main():
@@ -52,4 +53,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    s = Oracle()
+    s.create_database('install_20250418162751', 'Seeyon123456')
