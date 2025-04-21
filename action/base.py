@@ -223,7 +223,7 @@ class InstallTools(ConfLoad):
         self.database_input(window)
         self.click_next_step(window, "数据库", "数据库")
         self.click_next_step(window, "数据库", "确认")
-        self.click_next_step(window, "确认", "确认")
+        self.click_next_step(window, "确认", "预安装摘要信息")
         self.click_next_step(window, "确认", "安装")
         time.sleep(60 * 4)  # 等待安装
         self.install_finish(window)
