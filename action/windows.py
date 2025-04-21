@@ -24,6 +24,12 @@ class WindowsInstallTools(InstallTools):
 
     def delete_install_path(self):
         if os.path.isdir(self.install_path):
+            try:
+                shutil.rmtree(self.install_path, onerror=handle_remove_read_only)
+            except:
+                pass
+        # 删除文件路径长度超过windows的场景
+        if os.path.isdir(self.install_path):
             params = f'Remove-Item -LiteralPath "{self.install_path}" -Force -Recurse'
             cmd = f"powershell -Command {params}"
             call_command(cmd)
