@@ -63,7 +63,7 @@ class WindowsInstallTools(InstallTools):
         check_yaml_path = os.path.join(self.check_dir, 'inst', 'check.yml')
         if os.path.isfile(check_yaml_path):
             self.change_check_config_file(check_yaml_path)
-            print("修改完成，warningMemoryMb 已更改为 0")
+            logger.info("修改完成，warningMemoryMb 已更改为 0")
         else:
             logger.info(f"没有找到修改安装检查项的配置文件：{check_yaml_path}")
 

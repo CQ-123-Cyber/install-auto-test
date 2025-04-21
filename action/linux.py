@@ -73,7 +73,7 @@ class LinuxInstallTools(InstallTools):
             self.ssh_client.download_file(check_yaml_path, local_yaml_path)
             self.change_check_config_file(local_yaml_path)
             self.ssh_client.upload_file(local_yaml_path, check_yaml_path)
-            print("修改完成，warningMemoryMb 已更改为 0")
+            logger.info("修改完成，warningMemoryMb 已更改为 0")
         else:
             logger.info(f"没有找到修改安装检查项的配置文件：{check_yaml_path}")
 

@@ -1,5 +1,6 @@
 import os
 import re
+from loguru import logger
 import traceback
 from typing import List
 from sqlalchemy import create_engine
@@ -39,8 +40,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return conn
         except:
-            print(f"mysql连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"mysql连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def dm(self):
@@ -52,7 +53,7 @@ class SqlExecutor:
                     os.path.join(jar_dir, 'oscarJDBC.jar'),
                     os.path.join(jar_dir, 'ojdbc8.jar'),
                     os.path.join(jar_dir, 'mssql-jdbc-12.2.0.jre8.jar')]
-            print(constant.settings)
+            logger.info(constant.settings)
             url = constant.settings['sql'][models.SqlTypeEnum.DM.value]['url']
             user = constant.settings['sql'][models.SqlTypeEnum.DM.value]['user']
             password = constant.settings['sql'][models.SqlTypeEnum.DM.value]['password']
@@ -63,8 +64,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return cursor
         except:
-            print(f"达梦连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"达梦连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def kingbase8(self):
@@ -86,8 +87,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return cursor
         except:
-            print(f"人大金仓连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"人大金仓连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def gbasedbt(self):
@@ -109,8 +110,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return cursor
         except:
-            print(f"南大通用连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"南大通用连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def oscar(self):
@@ -132,8 +133,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return cursor
         except:
-            print(f"神通连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"神通连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def oracle(self):
@@ -155,8 +156,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return cursor
         except:
-            print(f"oracle连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"oracle连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def sqlserver(self):
@@ -178,8 +179,8 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return cursor
         except:
-            print(f"sqlserver连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"sqlserver连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def pgsql(self):
@@ -189,17 +190,17 @@ class SqlExecutor:
             self.conn_close_list.append(conn)
             return conn
         except:
-            print(f"pgsql连接出错，跳过sql执行")
-            print(traceback.format_exc())
+            logger.info(f"pgsql连接出错，跳过sql执行")
+            logger.info(traceback.format_exc())
             return None
 
     def execute(self, conn, sql, sql_type: models.SqlTypeEnum):
-        print("sql实际执行")
+        logger.info("sql实际执行")
         sql_list = self.format_sql(sql, sql_type)
         if self.check_sql(sql_list):
             raise RuntimeError('sql中包含危险操作，drop或者update没有where条件')
         for sub_sql in sql_list:
-            print(sub_sql)
+            logger.info(sub_sql)
             conn.execute(sub_sql)
 
     @staticmethod

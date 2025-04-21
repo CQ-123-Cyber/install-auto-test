@@ -1,6 +1,8 @@
 import win32api, win32con, win32gui
 import ctypes
 
+from loguru import logger
+
 
 def switch_input_method():
     IMC_GETOPENSTATUS = 0x0005
@@ -10,13 +12,13 @@ def switch_input_method():
     handle = win32gui.GetForegroundWindow()  # 某进程窗口句柄
     hIME = imm32.ImmGetDefaultIMEWnd(handle)
     status = win32api.SendMessage(hIME, win32con.WM_IME_CONTROL, IMC_GETOPENSTATUS, 0)  # 返回值 0:英文 1:中文
-    print(status)
+    logger.info(status)
 
     if status:
-        print('当前中文，切换为英文')
+        logger.info('当前中文，切换为英文')
         win32api.SendMessage(hIME, win32con.WM_IME_CONTROL, IMC_SETOPENSTATUS, 0)  # 关闭中文
     else:
-        print('当前英文')
+        logger.info('当前英文')
 
 
 #   win32api.SendMessage(hIME, win32con.WM_IME_CONTROL, IMC_SETOPENSTATUS, 0)	# 关闭中文

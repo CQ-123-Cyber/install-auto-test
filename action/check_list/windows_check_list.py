@@ -1,6 +1,7 @@
 import os
 import winreg
 from loguru import logger
+from retry import retry
 
 from action.check_list.check_list import CheckList
 
@@ -68,6 +69,7 @@ class WindowsCheckList(CheckList):
             logger.error(f"注册表验证失败，HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\SEEYON不存在")
             raise
 
+    @retry(tries=12, delay=10)
     def check_finish_install_path(self):
         """
         安装完成后检查安装目录

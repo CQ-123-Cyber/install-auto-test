@@ -1,6 +1,8 @@
 import paramiko
 from retry import retry
 
+from loguru import logger
+
 
 class SSHClient():
     def __init__(self, ip=None, host=None, port=None, username=None, user=None, password=None, **kwargs):
@@ -41,7 +43,7 @@ class SSHClient():
             sftp = self.ssh.open_sftp()
             sftp.put(local_path, remote_path)
             sftp.close()
-            print(f"文件 {local_path} 上传到 {remote_path} 成功")
+            logger.info(f"文件 {local_path} 上传到 {remote_path} 成功")
         except Exception as e:
             raise RuntimeError(f"上传 {local_path} 到 {remote_path} 失败: {repr(e)}")
 
@@ -50,7 +52,7 @@ class SSHClient():
             sftp = self.ssh.open_sftp()
             sftp.get(remote_path, local_path)
             sftp.close()
-            print(f"文件 {remote_path} 下载到 {local_path} 成功")
+            logger.info(f"文件 {remote_path} 下载到 {local_path} 成功")
         except Exception as e:
             raise RuntimeError(f"下载 {remote_path} 到 {local_path} 失败: {repr(e)}")
 
