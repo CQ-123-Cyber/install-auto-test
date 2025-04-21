@@ -8,7 +8,7 @@ from action.linux import LinuxInstallTools
 from utils.cmd_tools import getoutput
 
 
-def main():
+def create_tools():
     os_system = os.getenv('os_system', 'windows')
     logger.info(f"从环境变量识别到os_system={os_system}")
     dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', os_system, '.env')
@@ -22,21 +22,20 @@ def main():
         tools = LinuxInstallTools()
     else:
         raise Exception(f"操作系统待实现：{os_system}")
+    return tools
 
-    if len(sys.argv) > 1 and sys.argv[1] == 'check_finish_install_path':
-        tools.check_list.check_finish_install_path()
-        return
+
+def main():
+    tools = create_tools()
 
     # assert isinstance(tools, LinuxInstallTools)  # 开发调试用
     logger.info(f"开始验证码")
     tools.get_verify_code()
-    logger.info("开始重置截图目录")
-    tools.reset_screenshots_dir()
     logger.info(f"开始删除安装目标目录")
     tools.delete_install_path()
     tools.delete_registry_key()
-    tools.download()
-    tools.unzip_package()
+    # tools.download()
+    # tools.unzip_package()
     tools.change_check_config()
     tools.change_check_version()
 
@@ -51,6 +50,8 @@ def main():
         if process:
             process.terminate()
         getoutput('taskkill /IM Xmanager.exe /F')
+
+    tools.check_list.check_finish_install_path()
 
 
 if __name__ == "__main__":

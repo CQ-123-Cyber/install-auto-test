@@ -45,19 +45,20 @@ class ConfLoad:
         self.verify_code_cache_path = f'verify_code_cache.{datetime2str_by_format(dt_format="%Y-%m-%d")}'
         # 安装包解压目录
         self.check_dir = f'{self.install_workspace}/{self.package_name.replace(".zip", "")}'
-        self.screenshots_dir = None
+        self.screenshots_dir = self.reset_screenshots_dir()
 
         # 基准截图目录
         self.base_screenshots_dir = os.path.join(self.install_workspace, 'base_screenshots', self.version,
                                                  self.product_line, self.os_system)
 
     def reset_screenshots_dir(self):
+        logger.info("开始重置截图目录")
         screenshots_dir = os.path.join(self.install_workspace, 'screenshots')
         if os.path.isdir(screenshots_dir):
             shutil.rmtree(screenshots_dir, onerror=handle_remove_read_only)
         if not os.path.isdir(screenshots_dir):
             os.makedirs(screenshots_dir)
-        self.screenshots_dir = screenshots_dir
+        return screenshots_dir
 
     def print_var(self):
         var_list = ['package_download_url', 'package_name', 'product_line', 'version', 'install_workspace',
