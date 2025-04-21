@@ -32,7 +32,7 @@ class WindowsInstallTools(InstallTools):
         if os.path.isdir(self.install_path):
             params = f'Remove-Item -LiteralPath "{self.install_path}" -Force -Recurse'
             cmd = f"powershell -Command {params}"
-            call_command(cmd)
+            getoutput(cmd)
 
     @staticmethod
     def delete_registry_key():
