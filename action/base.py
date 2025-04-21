@@ -431,7 +431,7 @@ class InstallTools(ConfLoad):
 
     @retry(tries=15, delay=60)
     def install_finish(self, window):
-        task = f"点击安装，进入安装界面，当前界面出现设置账号密码的输入框"
+        task = f"点击安装，进入安装界面，当前界面出现设置密码的输入框"
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
         content = Agent.verify(task, to_screenshot_b64(screenshot))

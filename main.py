@@ -6,7 +6,6 @@ from loguru import logger
 from action.windows import WindowsInstallTools
 from action.linux import LinuxInstallTools
 from utils.cmd_tools import getoutput
-from action.sql_action.oracle import Oracle
 
 
 def main():
@@ -34,8 +33,8 @@ def main():
     logger.info(f"开始删除安装目标目录")
     tools.delete_install_path()
     tools.delete_registry_key()
-    # tools.download()
-    # tools.unzip_package()
+    tools.download()
+    tools.unzip_package()
     tools.change_check_config()
     tools.change_check_version()
 
