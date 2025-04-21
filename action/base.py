@@ -158,11 +158,10 @@ class InstallTools(ConfLoad):
         # https://github.com/asweigart/PyGetWindow/issues/16
         window = pygetwindow.getWindowsWithTitle(title)[0]
         window.maximize()
-        time.sleep(1)
+        pyautogui.click(50, 50)
         window.restore()
-        time.sleep(1)
-        if window.isActive is False:
-            pyautogui.click(window.activate())
+        # if window.isActive is False:
+        #     pyautogui.click(window.activate())
         return window
 
     # @retry(tries=12, delay=10)
