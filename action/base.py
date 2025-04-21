@@ -157,6 +157,7 @@ class InstallTools(ConfLoad):
     def get_windows_use_title(title):
         # https://github.com/asweigart/PyGetWindow/issues/16
         window = pygetwindow.getWindowsWithTitle(title)[0]
+        window.maximize()
         window.restore()
         if window.isActive is False:
             pyautogui.click(window.activate())
