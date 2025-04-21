@@ -107,7 +107,7 @@ class WindowsInstallTools(InstallTools):
     def welcome_accept(self, window):
         """选择欢迎-接受"""
         task = "选择欢迎-接受，等待点击下一步"
-        position = (373, 319)
+        position = (373, 321)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         time.sleep(1)

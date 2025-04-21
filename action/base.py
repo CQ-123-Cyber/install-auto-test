@@ -275,7 +275,7 @@ class InstallTools(ConfLoad):
 
     def click_next_step(self, window, frame_name, next_frame_name, is_verify=True, is_save=True):
         """点击下一步"""
-        task = f"点击{frame_name}-下一步，进入{next_frame_name}"
+        task = f"点击{frame_name}-下一步，进入{next_frame_name}页面"
         position = (549, 407)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
