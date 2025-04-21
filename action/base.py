@@ -200,9 +200,10 @@ class InstallTools(ConfLoad):
         #     time.sleep(1)
 
     def install_steps(self, window):
+        window.maximize()
         window.restore()
         window.activate()
-        time.sleep(5)
+        time.sleep(1)
         logger.info(f"安装窗口位置：{window.left}, {window.top}, {window.width}, {window.height}")
 
         self.check_list.check_install_dir()
@@ -329,6 +330,8 @@ class InstallTools(ConfLoad):
         # 设置数据库类型
         if self.sql_type == SqlTypeEnum.ORACLE.value:
             logger.info(f'切换数据库类型到：{self.sql_type}')
+            window.maximize()
+            window.restore()
             if self.has_verify_code:
                 position = (545, 107)
             else:
@@ -341,6 +344,26 @@ class InstallTools(ConfLoad):
                 position = (321, 166)
             position = self.scale_up_and_down(position, window.width, window.height)
             pyautogui.click(window.left + position[0], window.top + position[1])
+        elif self.sql_type == SqlTypeEnum.SQLSERVER.value:
+            logger.info(f'切换数据库类型到：{self.sql_type}')
+            window.maximize()
+            window.restore()
+            if self.has_verify_code:
+                position = (545, 107)
+            else:
+                position = (545, 118)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+            if self.has_verify_code:
+                position = (321, None)  # 等待适配
+            else:
+                position = (321, 153)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+        elif self.sql_type == SqlTypeEnum.MYSQL.value:
+            pass
+        else:
+            raise RuntimeError(f"不支持的数据库类型：{self.sql_type}")
 
         # 设置host
         if self.has_verify_code:
@@ -386,7 +409,7 @@ class InstallTools(ConfLoad):
         if self.has_verify_code:
             position = (321, 237)
         else:
-            position = (321, 252)
+            position = (321, 255)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')

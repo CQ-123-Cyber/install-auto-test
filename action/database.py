@@ -4,6 +4,7 @@ from models.enum_model import SqlTypeEnum
 from utils.time_help import datetime2str_by_format
 from action.sql_action.mysql import Mysql
 from action.sql_action.oracle import Oracle
+from action.sql_action.sqlserver import SqlServer
 from conf import constant
 
 
@@ -56,9 +57,16 @@ class OracleDatabase(Database):
         }
 
 
+class SqlServerDatabase(Database):
+    def create_database(self):
+        s = SqlServer()
+        s.create_database(self.database_name)
+
+
 def get_database_cls(sql_type):
     cls_map = {
         SqlTypeEnum.MYSQL: MysqlDatabase(sql_type),
-        SqlTypeEnum.ORACLE: OracleDatabase(sql_type)
+        SqlTypeEnum.ORACLE: OracleDatabase(sql_type),
+        SqlTypeEnum.SQLSERVER: SqlServerDatabase(sql_type)
     }
     return cls_map[SqlTypeEnum.from_value(sql_type)]

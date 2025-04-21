@@ -28,7 +28,7 @@ class SqlExecutor:
             # models.SqlTypeEnum.KINGBASE: self.kingbase8,
             # models.SqlTypeEnum.GBASE: self.gbasedbt,
             # models.SqlTypeEnum.OSCAR: self.oscar,
-            # models.SqlTypeEnum.SQLSERVER: self.sqlserver,
+            models.SqlTypeEnum.SQLSERVER: self.sqlserver,
             # models.SqlTypeEnum.POSTGRESQL: self.pgsql,
         }
 

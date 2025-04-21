@@ -10,7 +10,7 @@ from action.sql_action.oracle import Oracle
 
 
 def main():
-    os_system = os.getenv('os_system', 'windows')
+    os_system = os.getenv('os_system', 'linux')
     logger.info(f"从环境变量识别到os_system={os_system}")
     dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', os_system, '.env')
     if not os.path.isfile(dotenv_path):

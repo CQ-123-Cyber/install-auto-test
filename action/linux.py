@@ -62,6 +62,8 @@ class LinuxInstallTools(InstallTools):
         self.exec_cmd(cmd)
         cmd = f"cd {self.install_workspace} && unzip {self.package_name}"
         self.exec_cmd(cmd)
+        cmd = f"chmod 777 -R {self.check_dir}"
+        self.exec_cmd(cmd)
 
     def change_check_config(self):
         """修改安装检查项"""
@@ -120,7 +122,7 @@ class LinuxInstallTools(InstallTools):
     def welcome_accept(self, window):
         """选择欢迎-接受"""
         task = "选择欢迎-接受，等待点击下一步"
-        position = (229, 319)
+        position = (229, 323)
         position = self.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         time.sleep(1)

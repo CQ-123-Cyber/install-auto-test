@@ -22,6 +22,13 @@ settings = {
             "password": "oracle",
             "host": "192.168.225.11",
             "port": "1521"
+        },
+        "sqlserver": {
+            "url": "jdbc:sqlserver://192.168.225.11:1433;DatabaseName=master;maxStatements=0;SelectMethod=cursor;socketTimeout=1800000;trustServerCertificate=true",
+            "user": "sa",
+            "password": "Seeyon123456",
+            "host": "192.168.225.11",
+            "port": "1433"
         }
     }
 }
