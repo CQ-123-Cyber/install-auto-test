@@ -57,7 +57,7 @@ class ConfLoad:
             shutil.rmtree(screenshots_dir, onerror=handle_remove_read_only)
         if not os.path.isdir(screenshots_dir):
             os.makedirs(screenshots_dir)
-        return screenshots_dir
+        self.screenshots_dir = screenshots_dir
 
     def print_var(self):
         var_list = ['package_download_url', 'package_name', 'product_line', 'version', 'install_workspace',

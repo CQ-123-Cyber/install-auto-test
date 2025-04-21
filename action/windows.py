@@ -28,6 +28,7 @@ class WindowsInstallTools(InstallTools):
                 shutil.rmtree(self.install_path, onerror=handle_remove_read_only)
             except:
                 pass
+        time.sleep(1)
         # 删除文件路径长度超过windows的场景
         if os.path.isdir(self.install_path):
             params = f'Remove-Item -LiteralPath "{self.install_path}" -Force -Recurse'
