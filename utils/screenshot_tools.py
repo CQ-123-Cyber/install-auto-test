@@ -27,3 +27,9 @@ def load_png_to_screenshot_b64(png_path):
         # 将字节数据转换为 Base64 编码的字符串
         screenshot_b64 = base64.b64encode(image_data).decode('utf-8')
         return screenshot_b64
+
+if __name__ == "__main__":
+    from agent.agent import Agent
+    screenshot = load_png_to_screenshot_b64('点击安装-下一步，进入IP访问控制页面.png')
+    content = Agent.verify('点击安装-下一步，进入完成-IP访问控制页面', screenshot)
+    print(content)

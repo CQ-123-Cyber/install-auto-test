@@ -232,7 +232,7 @@ class InstallTools(ConfLoad):
 
         self.check_list.check_password_info_input(window)
         self.password_info_input.action(window)
-        self.click_next_step(window, "安装", "IP访问控制")
+        self.click_next_step(window, "安装", "完成-IP访问控制")
         self.click_next_step(window, "安装", "安装完成，并且安装成功")
         self.click_next_step(window, "完成", "", is_verify=False, is_save=False)
 
