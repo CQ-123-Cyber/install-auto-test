@@ -143,7 +143,7 @@ class InstallTools(ConfLoad):
         cmd = f"powershell -Command {params}"
         call_command(cmd)
 
-    @retry(tries=3, delay=5)
+    @retry(tries=3, delay=20)
     def agent_verify(self, window, task):
         if self.ai_verify:
             screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
@@ -275,7 +275,6 @@ class InstallTools(ConfLoad):
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
 
-    @retry(tries=3, delay=20)
     def click_next_step(self, window, frame_name, next_frame_name, is_verify=True, is_save=True):
         """点击下一步"""
         task = f"点击{frame_name}-下一步，进入{next_frame_name}页面"
