@@ -1,7 +1,6 @@
 from action.conf_load import ConfLoad
 
 
-
 class NoCheckList(ConfLoad):
     """
     定义安装程序的检查项
@@ -12,6 +11,9 @@ class NoCheckList(ConfLoad):
         self.install_tool = install_tool
 
     def check_install_dir(self):
+        pass
+
+    def check_title(self):
         pass
 
     def agent_check_from_base(self, task, screenshot, base_screenshot):
