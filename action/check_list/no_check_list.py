@@ -13,7 +13,7 @@ class NoCheckList(ConfLoad):
     def check_install_dir(self):
         pass
 
-    def check_title(self):
+    def check_title(self, window):
         pass
 
     def agent_check_from_base(self, task, screenshot, base_screenshot):
