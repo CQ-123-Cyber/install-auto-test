@@ -22,6 +22,7 @@ class InstallTools(ConfLoad):
     def __init__(self):
         super().__init__()
         self.check_list = None
+        self.password_info_input = None
         self.print_var()
 
     def download(self):
@@ -206,10 +207,11 @@ class InstallTools(ConfLoad):
         window.restore()
         window.activate()
         time.sleep(1)
-        logger.info(f"安装窗口位置：{window.left}, {window.top}, {window.width}, {window.height}")
+        logger.info(f"安装窗口={window.title} 位置：{window.left}, {window.top}, {window.width}, {window.height}")
 
         self.check_list.check_install_dir()
         self.change_language()
+        self.check_list.check_title()
         self.check_list.check_welcome_accept(window)
         self.welcome_accept(window)
         self.click_next_step(window, "欢迎", "安装路径")
@@ -229,7 +231,7 @@ class InstallTools(ConfLoad):
         self.install_finish(window)
 
         self.check_list.check_password_info_input(window)
-        self.password_info_input(window)
+        self.password_info_input.action(window)
         self.click_next_step(window, "安装", "安装-IP访问控制")
         self.click_next_step(window, "安装", "安装完成，并且安装成功")
         self.click_next_step(window, "完成", "", is_verify=False, is_save=False)
@@ -439,11 +441,6 @@ class InstallTools(ConfLoad):
             status = content['status']
             if status == "不正确":
                 raise RuntimeError(f"使用AI验证操作结果不正确：\n{content}")
-
-    @abstractmethod
-    def password_info_input(self, window):
-        # 初始化管理员账号
-        pass
 
     @abstractmethod
     def copy_soft_dog(self):

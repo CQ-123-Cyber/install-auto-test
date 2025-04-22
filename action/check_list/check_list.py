@@ -35,6 +35,14 @@ class CheckList(ConfLoad):
                 if status == "不正确":
                     raise RuntimeError(f"使用AI检查页面不正确：\n{content}")
 
+    def check_title(self, window):
+        title = window.title
+        assert self.version in title, f'安装窗口标题有误：不包含版本号={self.version}'
+        if self.product_line == 'A8-2':
+            assert '集团版' in title, f'安装窗口标题有误：不包含产品线={self.product_line}'
+        elif self.product_line == 'A8-1':
+            assert '企业版' in title, f'安装窗口标题有误：不包含产品线={self.product_line}'
+
     def check_from_base(self, task, window):
         if not os.path.isdir(self.base_screenshots_dir):
             os.makedirs(self.base_screenshots_dir)

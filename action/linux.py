@@ -14,6 +14,7 @@ from utils.cmd_tools import get_local_ip, getoutput
 from utils.ssh_tools import get_ssh_client
 from action.check_list.linux_check_list import LinuxCheckList
 from action.check_list.no_check_list import NoCheckList
+from action.diff_action.password_info_input import LinuxPasswordInfoInput
 
 
 def run_as_admin_with_multiprocessing(check_dir, product_line):
@@ -29,6 +30,7 @@ class LinuxInstallTools(InstallTools):
     def __init__(self):
         super().__init__()
         self.check_list = LinuxCheckList(self) if self.is_check_list == True else NoCheckList(self)
+        self.password_info_input = LinuxPasswordInfoInput(self)
         self.ssh_client = get_ssh_client()
         self.exec_cmd(f'mkdir -p {self.install_workspace}')
 
@@ -139,50 +141,6 @@ class LinuxInstallTools(InstallTools):
         time.sleep(1)
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
-
-    def password_info_input(self, window):
-        # 初始化管理员账号
-        position = (459, 93)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('init-admin', interval=0.1)
-
-        position = (459, 124)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 153)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 209)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 237)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 267)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 295)
-        position = self.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
 
     def copy_soft_dog(self):
         soft_dog_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
