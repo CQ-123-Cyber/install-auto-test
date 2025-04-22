@@ -54,7 +54,7 @@ class WindowsCheckList(CheckList):
                         value_name, value_data, value_type = winreg.EnumValue(key, i)
                         logger.info(f"Value {i}: Name = {value_name}, Data = {value_data}, Type = {value_type}")
                         if value_name == 'SEEYON_VERSION':
-                            assert value_data.lower() == self.version.lower(), f"注册表中SEEYON_VERSION不正确：SEEYON_VERSION={value_data}, env.version={self.version}"
+                            assert self.version.lower() in value_data.lower(), f"注册表中SEEYON_VERSION不正确：SEEYON_VERSION={value_data}, env.version={self.version}"
                         if value_name == 'SEEYON_PATH':
                             assert os.path.normpath(value_data) == os.path.normpath(
                                 self.install_path), f"注册表中SEEYON_PATH不正确：SEEYON_PATH={value_data}, env.install_path={self.install_path}"

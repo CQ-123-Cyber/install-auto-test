@@ -9,7 +9,7 @@ from utils.cmd_tools import getoutput
 
 
 def create_tools():
-    os_system = os.getenv('os_system', 'windows')
+    os_system = os.getenv('os_system', 'linux')
     logger.info(f"从环境变量识别到os_system={os_system}")
     dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', os_system, '.env')
     if not os.path.isfile(dotenv_path):
@@ -34,8 +34,8 @@ def main():
     logger.info(f"开始删除安装目标目录")
     tools.delete_install_path()
     tools.delete_registry_key()
-    tools.download()
-    tools.unzip_package()
+    # tools.download()
+    # tools.unzip_package()
     tools.change_check_config()
     tools.change_check_version()
 

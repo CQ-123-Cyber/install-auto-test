@@ -8,13 +8,12 @@ from retry import retry
 from loguru import logger
 
 from action.base import InstallTools
+from action.database import get_database_cls
 from utils.cmd_tools import call_command, getoutput
-from agent.agent import Agent
-from utils.screenshot_tools import to_screenshot_b64
+from models.enum_model import SqlTypeEnum
 from utils.file_tools import handle_remove_read_only
 from action.check_list.windows_check_list import WindowsCheckList
 from action.check_list.no_check_list import NoCheckList
-from utils.time_help import datetime2str_by_format
 from action.diff_action.password_info_input import WindowsPasswordInfoInput
 
 
@@ -126,6 +125,112 @@ class WindowsInstallTools(InstallTools):
         time.sleep(1)
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+
+    def database_input(self, window):
+        task = "设置数据库-input"
+        sql_cls = get_database_cls(self.sql_type)
+        sql_cls.create_database()
+        input_data = sql_cls.get_input_data()
+
+        # 设置数据库类型
+        if self.sql_type == SqlTypeEnum.ORACLE.value:
+            logger.info(f'切换数据库类型到：{self.sql_type}')
+            window.maximize()
+            window.restore()
+            if self.has_verify_code:
+                position = (545, 107)
+            else:
+                position = (545, 118)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+            if self.has_verify_code:
+                position = (321, None)  # 等待适配
+            else:
+                position = (321, 166)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+        elif self.sql_type == SqlTypeEnum.SQLSERVER.value:
+            logger.info(f'切换数据库类型到：{self.sql_type}')
+            window.maximize()
+            window.restore()
+            if self.has_verify_code:
+                position = (545, 107)
+            else:
+                position = (545, 118)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+            if self.has_verify_code:
+                position = (321, None)  # 等待适配
+            else:
+                position = (321, 153)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+        elif self.sql_type == SqlTypeEnum.MYSQL.value:
+            pass
+        else:
+            raise RuntimeError(f"不支持的数据库类型：{self.sql_type}")
+
+        # 设置host
+        if self.has_verify_code:
+            position = (321, 133)
+        else:
+            position = (321, 146)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write(input_data['host'], interval=0.1)
+
+        # 设置端口
+        if self.has_verify_code:
+            position = (345, 159)
+        else:
+            position = (321, 174)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write(input_data['port'], interval=0.1)
+
+        # 设置数据库名称
+        if self.has_verify_code:
+            position = (321, 187)
+        else:
+            position = (321, 200)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write(input_data['database_name'], interval=0.1)
+
+        # 设置用户名
+        if self.has_verify_code:
+            position = (321, 211)
+        else:
+            position = (321, 226)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write(input_data['user'], interval=0.1)
+
+        # 设置密码
+        if self.has_verify_code:
+            position = (321, 237)
+        else:
+            position = (321, 255)
+        position = self.scale_up_and_down(position, window.width, window.height)
+        pyautogui.click(window.left + position[0], window.top + position[1])
+        pyautogui.hotkey('ctrl', 'a')
+        pyautogui.write(input_data['password'], interval=0.1)
+
+        # 验证码
+        if self.has_verify_code:
+            position = (321, 300)
+            position = self.scale_up_and_down(position, window.width, window.height)
+            pyautogui.click(window.left + position[0], window.top + position[1])
+            pyautogui.hotkey('ctrl', 'a')
+            pyautogui.write(self.verify_code, interval=0.1)
+
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
+        self.agent_verify(window, task)
 
     def copy_soft_dog(self):
         soft_dog_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
