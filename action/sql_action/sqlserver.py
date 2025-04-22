@@ -27,4 +27,4 @@ ALTER DATABASE {database_name} SET MULTI_USER;
 
 if __name__ == "__main__":
     s = SqlServer()
-    s.create_database('install_20250421170000')
+    s.create_database('install_2025042117000')
