@@ -211,7 +211,7 @@ class InstallTools(ConfLoad):
 
         self.check_list.check_install_dir()
         self.change_language()
-        self.check_list.check_title()
+        self.check_list.check_title(window)
         self.check_list.check_welcome_accept(window)
         self.welcome_accept(window)
         self.click_next_step(window, "欢迎", "安装路径")
