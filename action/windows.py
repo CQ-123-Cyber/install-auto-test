@@ -144,7 +144,7 @@ class WindowsInstallTools(InstallTools):
             position = self.scale_up_and_down(position, window.width, window.height)
             pyautogui.click(window.left + position[0], window.top + position[1])
             if self.has_verify_code:
-                position = (321, None)  # 等待适配
+                position = (321, 154)  # 等待适配
             else:
                 position = (321, 166)
             position = self.scale_up_and_down(position, window.width, window.height)
@@ -160,7 +160,7 @@ class WindowsInstallTools(InstallTools):
             position = self.scale_up_and_down(position, window.width, window.height)
             pyautogui.click(window.left + position[0], window.top + position[1])
             if self.has_verify_code:
-                position = (321, None)  # 等待适配
+                position = (321, 138)
             else:
                 position = (321, 153)
             position = self.scale_up_and_down(position, window.width, window.height)

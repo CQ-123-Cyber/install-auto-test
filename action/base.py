@@ -324,7 +324,7 @@ class InstallTools(ConfLoad):
         self.agent_verify(window, task)
 
     @abstractmethod
-    def database_input(self):
+    def database_input(self, window):
         pass
 
     @retry(tries=15, delay=60)
