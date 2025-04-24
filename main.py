@@ -29,6 +29,7 @@ def create_tools():
 def create_database():
     sql_type = os.getenv('sql_type')
     begin_database_name = os.getenv('BUILD_USER')
+    logger.info(f'BUILD_USER={begin_database_name}')
     d = Database(sql_type, begin_database_name=begin_database_name)
     d.create_database()
     data = d.get_input_data()
