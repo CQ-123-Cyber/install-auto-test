@@ -29,6 +29,7 @@ def call_command(cmd, cwd=None, env=None, shell=True):
 
 
 def getoutput(cmd):
+    logger.info(cmd)
     logger.info(subprocess.getoutput(cmd))
 
 
