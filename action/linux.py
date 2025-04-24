@@ -46,6 +46,11 @@ class LinuxInstallTools(InstallTools):
 
     def delete_install_path(self):
         assert self.install_path != '' and self.install_path != '/'
+        logger.info(f'停止V5和S1服务')
+        cmd = f"cd {self.install_path}/ApacheJetspeed/bin && sh shutdown.sh"
+        self.exec_cmd(cmd)
+        cmd = f"cd {self.install_path}/S1/bin && sh stop.sh"
+        self.exec_cmd(cmd)
         logger.info(f"安装目标目录：{self.install_path}")
         cmd = f'rm -rf {self.install_path}'
         self.exec_cmd(cmd)

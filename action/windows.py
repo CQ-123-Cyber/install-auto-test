@@ -25,6 +25,13 @@ class WindowsInstallTools(InstallTools):
 
     def delete_install_path(self):
         if os.path.isdir(self.install_path):
+            logger.info(f'停止V5和S1服务')
+            params = (f'Start-Process "{self.install_path}\ApacheJetspeed\\bin\shutdown.bat" -Verb RunAs')
+            cmd = f"powershell -Command {params}"
+            getoutput(cmd)
+            params = (f'Start-Process "{self.install_path}\S1\\bin\stop.bat" -Verb RunAs')
+            cmd = f"powershell -Command {params}"
+            getoutput(cmd)
             try:
                 shutil.rmtree(self.install_path, onerror=handle_remove_read_only)
             except:
