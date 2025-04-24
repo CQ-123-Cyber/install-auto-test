@@ -6,20 +6,23 @@ from action.sql_action.mysql import Mysql
 from action.sql_action.oracle import Oracle
 from action.sql_action.sqlserver import SqlServer
 from conf import constant
+from utils.name_tools import verify_name
 
 
 class Database:
-    def __init__(self, sql_type: str):
+    def __init__(self, sql_type: str, begin_database_name='install'):
         self.host = constant.settings['sql'][sql_type]['host']
         self.port = constant.settings['sql'][sql_type]['port']
         self.user = constant.settings['sql'][sql_type]['user']
         self.password = constant.settings['sql'][sql_type]['password']
+        self.begin_database_name = begin_database_name
+        if not verify_name(self.begin_database_name) or self.begin_database_name != 'install':
+            raise Exception('数据库名称开头必须是自己的协同登录名，请使用自己的协同名，例如：tenghc')
         self.database_name = self.generate_database_name()
         self.default_password = "Seeyon123456"
 
-    @staticmethod
-    def generate_database_name():
-        return f"install_{datetime2str_by_format(dt_format='%Y%m%d%H%M%S')}"
+    def generate_database_name(self):
+        return f"{self.begin_database_name}_{datetime2str_by_format(dt_format='%Y%m%d%H%M%S')}"
 
     @abstractmethod
     def create_database(self):

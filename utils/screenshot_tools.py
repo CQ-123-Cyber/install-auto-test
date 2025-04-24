@@ -30,6 +30,9 @@ def load_png_to_screenshot_b64(png_path):
 
 if __name__ == "__main__":
     from agent.agent import Agent
-    screenshot = load_png_to_screenshot_b64('cur_agent_check.png')
-    content = Agent.check('当前处于安装步骤界面，界面上出现账号密码设置', screenshot)
+    screenshot = load_png_to_screenshot_b64('D:\\tmp-02\\点击安装-下一步，进入完成-IP访问控制页面.png')
+    content = Agent.check('点击安装-下一步，进入安装-IP访问控制页面或完成-IP访问控制页面', screenshot)
+    print(content)
+    screenshot = load_png_to_screenshot_b64('D:\\tmp-02\\点击安装-下一步，进入安装-IP访问控制或者完成-IP访问控制页面.png')
+    content = Agent.check('点击安装-下一步，进入安装-IP访问控制页面或完成-IP访问控制页面', screenshot)
     print(content)

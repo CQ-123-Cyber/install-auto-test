@@ -15,4 +15,4 @@ class Mysql:
 
 if __name__ == "__main__":
     s = Mysql()
-    s.create_database('test')
+    s.create_database('install_0424')

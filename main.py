@@ -6,6 +6,7 @@ from loguru import logger
 from action.windows import WindowsInstallTools
 from action.linux import LinuxInstallTools
 from utils.cmd_tools import getoutput
+from action.database import Database
 
 
 def create_tools():
@@ -25,7 +26,21 @@ def create_tools():
     return tools
 
 
+def create_db():
+    sql_type = os.getenv('sql_type')
+    begin_database_name = os.getenv('BUILD_USER')
+    d = Database(sql_type, begin_database_name=begin_database_name)
+    d.create_database()
+    data = d.get_input_data()
+    data.update({'sql_type': sql_type})
+    logger.info(f"创建的数据库信息：{data}")
+
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == 'create_db':
+        create_db()
+        return
+
     tools = create_tools()
 
     # assert isinstance(tools, LinuxInstallTools)  # 开发调试用

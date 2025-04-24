@@ -4,6 +4,7 @@ from loguru import logger
 
 from utils.file_tools import handle_remove_read_only
 from utils.time_help import datetime2str_by_format
+from utils.name_tools import verify_name
 
 
 class ConfLoad:
@@ -11,6 +12,11 @@ class ConfLoad:
         self.ai_verify = os.getenv('ai_verify', '').lower() == 'true'
         self.has_verify_code = os.getenv('has_verify_code', 'false').lower() == 'true'
         self.is_check_list = os.getenv('is_check_list', '').lower() == 'true'
+        self.job_name = os.getenv('job_name')
+        if not self.job_name:
+            raise Exception(f"没有找到环境变量：job_name")
+        if not verify_name(self.job_name):
+            raise Exception(f"job_name必须以自己的协同登录名开头，例如：tenghc_xxx")
         self.os_system = os.getenv('os_system')
         if not self.os_system:
             raise Exception(f"没有找到环境变量：os_system")
@@ -36,6 +42,7 @@ class ConfLoad:
         self.install_path = os.getenv('install_path')
         if not self.install_path:
             raise Exception(f"没有找到环境变量：install_path")
+        self.install_path = self.install_path.format(self.job_name)
         self.sql_type = os.getenv('sql_type')
         if not self.sql_type:
             raise Exception(f"没有找到环境变量：sql_type")

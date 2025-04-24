@@ -10,12 +10,12 @@ url = f"https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 api_key = "sk-af877d0ab744453eaa437da0df76eeaa"
 model = "qwen-vl-plus"
 model = "qvq-72b-preview"  # 只支持单轮对话
-model = "qwen-vl-max-2025-01-25"  # 图片+推理效果不好
+model = "qwen-vl-max-2025-01-25"
 
 
-# model = "llama-4-maverick-17b-128e-instruct"
+# model = "llama-4-maverick-17b-128e-instruct"  # 免费但是限制token
 # model = "qwen2.5-vl-32b-instruct" # 图片+推理效果不好
-# model = 'qwen-vl-ocr'
+# model = 'qwen-vl-ocr'  # 图片识别
 
 
 class Agent:
