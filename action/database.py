@@ -16,7 +16,7 @@ class Database:
         self.user = constant.settings['sql'][sql_type]['user']
         self.password = constant.settings['sql'][sql_type]['password']
         self.begin_database_name = begin_database_name
-        if not verify_name(self.begin_database_name) or self.begin_database_name != 'install':
+        if not verify_name(self.begin_database_name):
             raise Exception('数据库名称开头必须是自己的协同登录名，请使用自己的协同名，例如：tenghc')
         self.database_name = self.generate_database_name()
         self.default_password = "Seeyon123456"

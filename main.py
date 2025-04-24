@@ -27,8 +27,8 @@ def create_tools():
 
 
 def create_database():
-    sql_type = os.getenv('sql_type')
-    begin_database_name = os.getenv('BUILD_USER')
+    sql_type = os.getenv('sql_type', 'mysql')
+    begin_database_name = os.getenv('BUILD_USER', 'admin')
     logger.info(f'BUILD_USER={begin_database_name}')
     d = Database(sql_type, begin_database_name=begin_database_name)
     d.create_database()
@@ -38,6 +38,7 @@ def create_database():
 
 
 def main():
+    print(sys.argv)
     if len(sys.argv) > 1 and sys.argv[1] == 'create_database':
         create_database()
         return
