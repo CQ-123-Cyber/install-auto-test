@@ -38,7 +38,6 @@ def create_database():
 
 
 def main():
-    print(sys.argv)
     if len(sys.argv) > 1 and sys.argv[1] == 'create_database':
         create_database()
         return
