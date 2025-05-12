@@ -29,6 +29,13 @@ settings = {
             "password": "Seeyon123456",
             "host": "192.168.225.11",
             "port": "1433"
-        }
+        },
+        "mysql8": {
+            "url": "mysql+pymysql://root:Seeyoncom.123@192.168.225.11:3306?charset=utf8mb4&allowPublicKeyRetrieval=true",
+            "user": "root",
+            "password": "Seeyon123456",
+            "host": "192.168.225.11",
+            "port": "3306"
+        },
     }
 }
