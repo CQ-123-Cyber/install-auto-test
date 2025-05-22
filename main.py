@@ -6,7 +6,7 @@ from loguru import logger
 from action.windows import WindowsInstallTools
 from action.linux import LinuxInstallTools
 from utils.cmd_tools import getoutput
-from action.database import Database
+from action.database import get_database_cls
 
 
 def create_tools():
@@ -27,10 +27,10 @@ def create_tools():
 
 
 def create_database():
-    sql_type = os.getenv('sql_type', 'mysql')
+    sql_type = os.getenv('sql_type', 'sqlserver')
     begin_database_name = os.getenv('BUILD_USER', 'admin')
     logger.info(f'BUILD_USER={begin_database_name}')
-    d = Database(sql_type, begin_database_name=begin_database_name)
+    d = get_database_cls(sql_type, begin_database_name=begin_database_name)
     d.create_database()
     data = d.get_input_data()
     data.update({'sql_type': sql_type})

@@ -66,10 +66,10 @@ class SqlServerDatabase(Database):
         s.create_database(self.database_name)
 
 
-def get_database_cls(sql_type):
+def get_database_cls(sql_type, begin_database_name='install'):
     cls_map = {
-        SqlTypeEnum.MYSQL: MysqlDatabase(sql_type),
-        SqlTypeEnum.ORACLE: OracleDatabase(sql_type),
-        SqlTypeEnum.SQLSERVER: SqlServerDatabase(sql_type)
+        SqlTypeEnum.MYSQL: MysqlDatabase(sql_type, begin_database_name=begin_database_name),
+        SqlTypeEnum.ORACLE: OracleDatabase(sql_type, begin_database_name=begin_database_name),
+        SqlTypeEnum.SQLSERVER: SqlServerDatabase(sql_type, begin_database_name=begin_database_name)
     }
     return cls_map[SqlTypeEnum.from_value(sql_type)]
