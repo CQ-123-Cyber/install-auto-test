@@ -172,46 +172,62 @@ class LinuxPasswordInfoInput():
         pyautogui.write('Ab123456', interval=0.1)
 
     def gtfromv81_a82(self, window):
-        # 初始化管理员账号
-        logger.info(f"password_info_input使用三员分离后")
-        position = (459, 93)
-        position = self.install_tool.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('init-admin', interval=0.1)
+        # # 初始化管理员账号
+        # logger.info(f"password_info_input使用三员分离后")
+        # position = (459, 93)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('init-admin', interval=0.1)
+        #
+        # position = (459, 124)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('Ab123456', interval=0.1)
+        #
+        # position = (459, 153)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('Ab123456', interval=0.1)
+        #
+        # position = (459, 209)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('Ab123456', interval=0.1)
+        #
+        # position = (459, 237)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('Ab123456', interval=0.1)
+        #
+        # position = (459, 267)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('Ab123456', interval=0.1)
+        #
+        # position = (459, 295)
+        # position = self.install_tool.scale_up_and_down(position, window.width, window.height)
+        # pyautogui.click(window.left + position[0], window.top + position[1])
+        # pyautogui.hotkey('ctrl', 'a')
+        # pyautogui.write('Ab123456', interval=0.1)
 
-        position = (459, 124)
+    # def fill_password_fields(self, window):
+        # 设置密码
+        position = (459, 200)  # 假定第一个密码框的位置
         position = self.install_tool.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
+        pyautogui.write('Ab123456', interval=0.1)  # 第一个密码
 
-        position = (459, 153)
-        position = self.install_tool.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
 
-        position = (459, 209)
+        # 确认密码
+        position = (459, 230)  # 假定第二个密码框的位置
         position = self.install_tool.scale_up_and_down(position, window.width, window.height)
         pyautogui.click(window.left + position[0], window.top + position[1])
         pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 237)
-        position = self.install_tool.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 267)
-        position = self.install_tool.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
-
-        position = (459, 295)
-        position = self.install_tool.scale_up_and_down(position, window.width, window.height)
-        pyautogui.click(window.left + position[0], window.top + position[1])
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.write('Ab123456', interval=0.1)
+        pyautogui.write('Ab123456', interval=0.1)  # 第二个密码

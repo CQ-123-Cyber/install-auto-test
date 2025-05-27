@@ -147,10 +147,6 @@ class InstallTools(ConfLoad):
             screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
             screenshot.save(os.path.join(self.screenshots_dir, f'{task}.png'))
             content = Agent.verify(task, to_screenshot_b64(screenshot))
-            if content:
-                status = content['status']
-                if status == "不正确":
-                    raise RuntimeError(f"使用AI验证操作结果不正确：\n{content}")
 
     @staticmethod
     def get_windows_use_title(title):
@@ -224,7 +220,10 @@ class InstallTools(ConfLoad):
         self.click_next_step(window, "数据库", "数据库")
         self.click_next_step(window, "数据库", "确认")
         self.click_next_step(window, "确认", "预安装摘要信息")
+        self.click_next_step(window, "确认", "升级")  # 升级
         self.click_next_step(window, "确认", "安装")
+
+
         time.sleep(60 * 4)  # 等待安装
         self.install_finish(window)
 

@@ -66,7 +66,7 @@ class LinuxCheckList(CheckList):
         安装完成后检查注册表
         """
         logger.info(f"安装完成，检查注册表是否注册成功")
-        registry_file_path = '/root/.config/seeyoninstall_A8.info'
+        registry_file_path = '/root/.config/seeyon/fake_registry.info'
         if self.ssh_tools.remote_file_exists(registry_file_path):
             logger.info(f"注册表验证成功，{registry_file_path}存在")
             data = self.ssh_tools.read_remote_file(registry_file_path)

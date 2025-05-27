@@ -109,3 +109,12 @@ class CheckList(ConfLoad):
         self.install_tool.click_last_step(window, "安装", "确认")
         screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
         self.agent_check('当前处于安装步骤界面，界面上出现账号密码设置', screenshot)
+
+
+    def check_shengji(self, window):
+        task = "升级"
+        self.check_from_base(task, window)
+        self.install_tool.click_last_step(window, "升级","确认")
+        #self.install_tool.click_next_step(window, "确认", "升级")
+        screenshot = pyautogui.screenshot(region=(window.left, window.top, window.width, window.height))
+        self.agent_check('当前已经接受升级信息，确认无误', screenshot)

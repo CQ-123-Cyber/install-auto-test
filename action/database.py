@@ -26,6 +26,7 @@ class Database:
 
     @abstractmethod
     def create_database(self):
+
         pass
 
     def get_input_data(self):
@@ -73,3 +74,5 @@ def get_database_cls(sql_type, begin_database_name='install'):
         SqlTypeEnum.SQLSERVER: SqlServerDatabase(sql_type, begin_database_name=begin_database_name)
     }
     return cls_map[SqlTypeEnum.from_value(sql_type)]
+
+
